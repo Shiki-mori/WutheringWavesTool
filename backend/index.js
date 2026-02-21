@@ -15,6 +15,6 @@ app.post('/analyze', (req, res) => {//当收到post请求，并且路径是/anal
 })
 
     // 临时get测试接口，验证服务器是否工作
-    app.get('/', (req, res) => {res.send('This is test. Server is working')})
+    // app.get('/', (req, res) => {res.send('This is test. Server is working')})
     // 让服务器监听3000端口，等待请求
     app.listen(3000, () => {console.log('Server running on port 3000')})
