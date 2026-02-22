@@ -143,3 +143,26 @@ POST/average
   8. 前端更新响应式变量
   9. 页面自动刷新 
 ### 后端逻辑设计
+1. 接收JSON
+2. 读取numbers
+3. 验证是否为空，是则返回error信息
+4. 验证是否为数组，是则返回error信息
+5. 计算平均值
+6. 返回JSON  
+
+前端收到返回值后，根据JSON是否有average字段（业务层）以及HTTP状态码（协议层，存储在response.status中）来判断返回值是成功结果还是错误信息。  
+当average作为判断条件出现时，average的合法值可能为0，但bool值为false。因此不能只根据是否有average字段来判断。    
+HTTP状态码：  
+- 200：请求成功
+- 400：客户端数据错误
+- 500：服务器错误  
+
+前端判断response.status。如果是200，则使用average字段；如果不是200，则读取error信息。  
+Express中的默认状态码是200，所以请求成功时可以不写状态码。  
+
+### 写后端接口
+技术栈：Node.js+Express  
+运行环境：Node.js  
+Web框架：Express  
+语言：JavaScript  
+将之前用于演示的`/analyze`接口修改为`/average`接口。这个接口需要接收numbers数组，计算平均值，返回结果，错误处理。  
