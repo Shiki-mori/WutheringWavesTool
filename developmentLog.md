@@ -166,3 +166,28 @@ Express中的默认状态码是200，所以请求成功时可以不写状态码�
 Web框架：Express  
 语言：JavaScript  
 将之前用于演示的`/analyze`接口修改为`/average`接口。这个接口需要接收numbers数组，计算平均值，返回结果，错误处理。  
+
+完成后端接口后，先对后端接口进行测试。  
+测试方法：  
+- 浏览器：GET可以直接在地址栏测试，而POST不可以。
+- Postman
+- curl：  
+  curl -X POST http://localhost:3000/average \
+  -H "Content-Type: application/json" \
+  -d '{"numbers":[1,2,3]}'
+
+测试需要测试正常情况与不同的异常情况。  
+
+### 前端逻辑设计
+前端需要将输入的字符串进行处理，再向后端发送请求。  
+JavaScript的Number()转换规则：  
+- 自动忽略空格  
+- 非数字变为NaN（typeof NaN = number）
+- ""变为0
+
+边界情况处理：  
+在输入为`1,2,3,`时，需要避免最后一个空字符串被判断为0。  
+需要在前端添加`.filter(item => item.trim() !== "")`  
+
+信任边界：永远不要相信来自客户端的数据。  
+因此，即使前端进行了验证，后端仍然需要再次验证来确保安全性，避免用户篡改的数据被响应。  

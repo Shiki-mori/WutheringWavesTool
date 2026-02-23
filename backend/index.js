@@ -27,8 +27,17 @@ app.post(`/average`, (req, res) => {
     return res.status(400).json({error: 'Numbers array can\'t be empty.'})
   }
 
+  //验证是否都为整数
+  for (let n of numbers) {
+    if (!Number.isInteger(n)) {
+      return res.status(400).json({
+        error:"All elements must be integers."
+      })
+    }
+  }
+
   const sum = numbers.reduce(
-      (acc, cur) => acc + cur, 0)  // reduce：将数组压缩为一个值。
+      (acc, cur) => acc + cur, 0)  // 求和。reduce：将数组压缩为一个值。
   const average = sum / numbers.length
 
   res.json({average: average})
