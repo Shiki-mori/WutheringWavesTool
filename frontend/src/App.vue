@@ -1,7 +1,8 @@
 <template>
-  <div><!--一个容器元素，用于包含其中的元素。template中只能有一个根元素，去掉后将出现多个根元素。-->
+  <div><!--一个容器元素，用于包含其中的元素。template中只能有一个根元素，去掉后将出现多个根元素。div用于解决这个问题。-->
     <h1>Wuthering Waves Tool</h1>
     <button @click="testBackend">开始分析(这是按钮文字)</button><!--点击按钮时，调用testBackend函数-->
+    <input v-model="inputNumbers" placeholder="请输入整数，数字之间使用逗号隔开">
   </div>
 </template>
 
