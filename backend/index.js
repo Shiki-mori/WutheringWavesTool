@@ -2,6 +2,8 @@
 const cors = require('cors')        // 允许跨域访问
 
 const app = express()  // 创建一个Web服务器实例
+const {parseGachaUrl}=require("./utils/parseUrl")//引入解析URL的工具函数
+
 app.use(
     cors())  // 注册一个中间件（在请求到达路由之前执行的处理函数），cors允许跨域访问
 app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
@@ -42,6 +44,37 @@ app.post(`/average`, (req, res) => {
 
   res.json({average: average})
 })
+
+app.get("/api/gacha",(req,res)=>{
+  const url=req.query.url;
+
+  //console.log("收到URL:",url);
+  // const mockData={
+  //   total:90,
+  //   fiveStar:1,
+  //   fourStar:12,
+  //   avgPity:70,
+  //   uid:"12345678"
+  // };
+
+  const parsed=parseGachaUrl(url);
+
+  if(!parsed){
+    return res.json({
+      code:-1,
+      message:"invalid URL",
+      data:null
+    })
+  }
+  
+  res.json({
+    code:0,
+    message:"success",
+    //data:mockData
+    data:parsed
+  })
+})
+
 // 临时get测试接口，验证服务器是否工作
 // app.get('/', (req, res) => {res.send('This is test. Server is working')})
 // 让服务器监听3000端口，等待请求
