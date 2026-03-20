@@ -47,39 +47,50 @@ app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
 //   res.json({average: average})
 // })
 
-app.get("/api/gacha", (req, res) => {
-  const url = req.query.url;
+// app.get("/api/gacha", (req, res) => {
+//   const url = req.query.url;
 
-  //console.log("收到URL:",url);
-  // const mockData={
-  //   total:90,
-  //   fiveStar:1,
-  //   fourStar:12,
-  //   avgPity:70,
-  //   uid:"12345678"
-  // };
+//   //console.log("收到URL:",url);
+//   // const mockData={
+//   //   total:90,
+//   //   fiveStar:1,
+//   //   fourStar:12,
+//   //   avgPity:70,
+//   //   uid:"12345678"
+//   // };
 
-  const parsed = parseGachaUrl(url);
+//   const parsed = parseGachaUrl(url);
 
-  if (!parsed) {
-    return res.json({
-      code: -1,
-      message: "invalid URL",
-      data: null
-    })
-  }
+//   if (!parsed) {
+//     return res.json({
+//       code: -1,
+//       message: "invalid URL",
+//       data: null
+//     })
+//   }
 
-  res.json({
-    code: 0,
-    message: "success",
-    //data:mockData
-    data: parsed
-  })
-})
+//   res.json({
+//     code: 0,
+//     message: "success",
+//     //data:mockData
+//     data: parsed
+//   })
+// })
 
 app.post('/api/gacha/proxy', async (req, res) => {
   try {
-    const payload = req.body;//从请求体中获取数据
+    //检查请求体是否存在，并且是否包含URL字段。如果缺失，返回400错误和错误信息。
+    if (!req.body || !req.body.url) {
+      console.log('请求体缺失URL:', req.body);
+      return res.status(400).json({ error: 'Missing URL in request body' });
+    }
+
+    const url=req.body.url;//从请求体中获取URL
+    const payload = parseGachaUrl(url);//解析URL，获取必要的参数
+
+    if (!payload) {
+      return res.status(400).json({ error: 'URL 解析失败' });
+    }
 
     console.log('正在转发请求，Payload:', payload);
 

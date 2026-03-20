@@ -8,7 +8,7 @@
     <!-- <p>{{ avresult }}</p>在页面显示avresult变量的值 -->
 
     <input v-model="inputUrl" placeholder="输入链接">
-    <button @click="testConnection">开始分析</button>
+    <button @click="gachaAnalyze">开始分析</button>
     <p>{{ urlresult }}</p>
   </div>
 </template>
@@ -18,9 +18,9 @@
 import { ref } from 'vue'//ref是Vue的响应式变量
 //import { calculateAverage } from './api/average'
 
-import axios from 'axios'
-//import { getGachaData } from './api/gacha'
-import{parseGachaUrl} from './api/parseUrl'
+//import axios from 'axios'
+import { getGachaData } from './api/gacha'
+//import{parseGachaUrl} from './api/parseUrl'
 //import { parse } from 'vue/compiler-sfc'
 
 //const loading = ref(false)//定义一个响应式变量loading，初始值为false，用于表示是否正在加载数据
@@ -62,13 +62,12 @@ const urlresult = ref<any>(null)//定义一个响应式变量urlresult，初始�
 //   urlresult.value = res.data;
 // }
 
-const testConnection=async()=>{
-  const payload=parseGachaUrl(inputUrl.value);
+const gachaAnalyze=async()=>{
+
+  const res=await getGachaData(inputUrl.value);
 
   try{
-    const res=await axios.post('http://localhost:3000/api/gacha/proxy',payload);
-
-    urlresult.value=res.data;
+    urlresult.value=res;
     console.log('success:',res.data);
   } catch (error) {
     console.error('Error:', error);
