@@ -4,6 +4,7 @@ const cors = require('cors')        // 允许跨域访问
 
 const app = express()  // 创建一个Web服务器实例
 const { parseGachaUrl } = require("./utils/parseUrl")//引入解析URL的工具函数
+const { fetchAll } = require("./utils/fetchAll")
 
 app.use(
   cors())  // 注册一个中间件（在请求到达路由之前执行的处理函数），cors允许跨域访问
@@ -80,37 +81,47 @@ app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
 app.post('/api/gacha/proxy', async (req, res) => {
   try {
     //检查请求体是否存在，并且是否包含URL字段。如果缺失，返回400错误和错误信息。
-    if (!req.body || !req.body.url) {
-      console.log('请求体缺失URL:', req.body);
-      return res.status(400).json({ error: 'Missing URL in request body' });
-    }
+    // if (!req.body || !req.body.url) {
+    //   console.log('请求体缺失URL:', req.body);
+    //   return res.status(400).json({ error: 'Missing URL in request body' });
+    // }
 
-    const url=req.body.url;//从请求体中获取URL
-    const payload = parseGachaUrl(url);//解析URL，获取必要的参数
+    const url = req.body.url;//从请求体中获取URL
+    const payloads = fetchAll(url);
 
-    if (!payload) {
-      return res.status(400).json({ error: 'URL 解析失败' });
-    }
+    // if (!payloads || payloads.length === 0) {
+    //   return res.status(400).json({ error: 'URL 解析失败' });
+    // }
 
-    console.log('正在转发请求，Payload:', payload);
+    console.log('正在转发请求，Payload:', payloads);
+
+    const results = [];
 
     // 转发请求到目标服务器-游戏官方接口
-    const response = await axios({
-      url: 'https://gmserver-api.aki-game2.com/gacha/record/query',
-      method: 'POST',
-      data: payload,
-      headers: {
-        // 伪造头部，模仿游戏内嵌浏览器的行为
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/plain, */*',
-        'Origin': 'https://aki-gm-resources.aki-game.com',
-        'Referer': 'https://aki-gm-resources.aki-game.com/',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      }
-    })
+    for (const payload of payloads) {
+      const response = await axios({
+        url: 'https://gmserver-api.aki-game2.com/gacha/record/query',
+        method: 'POST',
+        data: payload,
+        headers: {
+          // 伪造头部，模仿游戏内嵌浏览器的行为
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/plain, */*',
+          'Origin': 'https://aki-gm-resources.aki-game.com',
+          'Referer': 'https://aki-gm-resources.aki-game.com/',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+      })
 
-    console.log('官方接口响应成功：', response.data.message);
-    res.json(response.data);//将官方接口的响应数据直接返回给前端
+      console.log('官方接口响应成功：', response.data.message);
+
+      results.push({
+        poolType: payload.cardPoolType,
+        data: response.data
+      })
+    }
+
+    res.json(results);
 
   } catch (error) {
     console.error('转发失败:', error.response?.data || error.message);
