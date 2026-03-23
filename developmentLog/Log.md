@@ -35,4 +35,4 @@
 
 不对不对，原来这里type参数不应该作为parseGachaUrl的返回。type参数经过测试是已知的，直接在后续进行拼接，得到完整的payload，再进行遍历。
 
-拼接方式为`静态的baseInfo+动态的type参数`。
+拼接方式为`静态的baseInfo`+`动态的type参数`。

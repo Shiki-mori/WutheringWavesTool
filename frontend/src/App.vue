@@ -68,7 +68,7 @@ const gachaAnalyze = async () => {
 
   try {
     urlresult.value = res;
-    console.log('success:', res.data);
+    console.log('success:', res);
   } catch (error) {
     console.error('Error:', error);
   }

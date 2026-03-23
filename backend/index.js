@@ -3,8 +3,9 @@ const axios = require('axios')        // 从node_modules/axios/中加载axios库
 const cors = require('cors')        // 允许跨域访问
 
 const app = express()  // 创建一个Web服务器实例
-const { parseGachaUrl } = require("./utils/parseUrl")//引入解析URL的工具函数
+// const { parseGachaUrl } = require("./utils/parseUrl")//引入解析URL的工具函数
 const { fetchAll } = require("./utils/fetchAll")
+const { analyzePool } = require("./utils/analyzePool")
 
 app.use(
   cors())  // 注册一个中间件（在请求到达路由之前执行的处理函数），cors允许跨域访问
@@ -115,9 +116,11 @@ app.post('/api/gacha/proxy', async (req, res) => {
 
       console.log('官方接口响应成功：', response.data.message);
 
+      const analyzedData = analyzePool(response.data);
+
       results.push({
         poolType: payload.cardPoolType,
-        data: response.data
+        data: analyzedData
       })
     }
 
