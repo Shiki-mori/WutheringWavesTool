@@ -94,7 +94,7 @@ app.post('/api/gacha/proxy', async (req, res) => {
     //   return res.status(400).json({ error: 'URL 解析失败' });
     // }
 
-    console.log('正在转发请求，Payload:', payloads);
+    console.log('正在转发请求,Payload:', payloads);
 
     const results = [];
 
@@ -116,7 +116,7 @@ app.post('/api/gacha/proxy', async (req, res) => {
 
       console.log('官方接口响应成功：', response.data.message);
 
-      const analyzedData = analyzePool(response.data);
+      const analyzedData = analyzePool(response.data.data);
 
       results.push({
         poolType: payload.cardPoolType,
