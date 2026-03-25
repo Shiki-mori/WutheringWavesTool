@@ -3,17 +3,8 @@
 const { isUpItem } = require('./isUpItem')
 
 function analyzePool(records) {
-    //const theTotal = records.data.length;
     const theTotal = records.length;//设定参数为纯数组，优化接口结构
     let fiveStarCount = 0;
-
-    // for (const item of records.data) {
-    //     if (item.qualityLevel === 5) {
-    //         fiveStarCount++;
-    //     } else if (item.qualityLevel === 4) {
-    //         fourStarCount++;
-    //     }
-    // }
 
     let pity = 0;//当前总抽数
     let pityList = [];//记录每次出金的抽数（到当前抽数）
