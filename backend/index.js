@@ -6,6 +6,7 @@ const app = express()  // 创建一个Web服务器实例
 // const { parseGachaUrl } = require("./utils/parseUrl")//引入解析URL的工具函数
 const { fetchAll } = require("./utils/fetchAll")
 const { analyzePool } = require("./utils/analyzePool")
+const {saveRecords}=require("./utils/saveRecords")
 
 app.use(
   cors())  // 注册一个中间件（在请求到达路由之前执行的处理函数），cors允许跨域访问
@@ -49,36 +50,6 @@ app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
 //   res.json({average: average})
 // })
 
-// app.get("/api/gacha", (req, res) => {
-//   const url = req.query.url;
-
-//   //console.log("收到URL:",url);
-//   // const mockData={
-//   //   total:90,
-//   //   fiveStar:1,
-//   //   fourStar:12,
-//   //   avgPity:70,
-//   //   uid:"12345678"
-//   // };
-
-//   const parsed = parseGachaUrl(url);
-
-//   if (!parsed) {
-//     return res.json({
-//       code: -1,
-//       message: "invalid URL",
-//       data: null
-//     })
-//   }
-
-//   res.json({
-//     code: 0,
-//     message: "success",
-//     //data:mockData
-//     data: parsed
-//   })
-// })
-
 app.post('/api/gacha/proxy', async (req, res) => {
   try {
     //检查请求体是否存在，并且是否包含URL字段。如果缺失，返回400错误和错误信息。
@@ -115,6 +86,8 @@ app.post('/api/gacha/proxy', async (req, res) => {
       })
 
       console.log('官方接口响应成功：', response.data.message);
+
+      await saveRecords(response.data,response.data.playerId);
 
       const analyzedData = analyzePool(response.data.data);
 
