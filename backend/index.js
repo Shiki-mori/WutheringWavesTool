@@ -11,6 +11,7 @@ const {saveRecords}=require("./utils/saveRecords")
 app.use(
   cors())  // 注册一个中间件（在请求到达路由之前执行的处理函数），cors允许跨域访问
 app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
+app.use('./api/readRecords',recordsRouter) //注册读取记录的路由
 // app.post('/analyze', (req, res)
 // => {//定义一个post接口，路径是/analyze。当收到post请求，并且路径是/analyze时执行此函数。该函数有两个参数req(请求)和res(响应)
 //     const data = req.body //读取前端发来的JSON
@@ -19,35 +20,6 @@ app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
 //         message: 'backend works',
 //         received: data
 //     })
-// })
-
-// app.post(`/average`, (req, res) => {
-//   const numbers = req.body.numbers
-
-//   // 验证是否为数组
-//   if (!Array.isArray(numbers)) {
-//     return res.status(400).json({error: 'Numbers must be an array.'})
-//   }
-
-//   // 验证数组是否为空
-//   if (numbers.length === 0) {
-//     return res.status(400).json({error: 'Numbers array can\'t be empty.'})
-//   }
-
-//   //验证是否都为整数
-//   for (let n of numbers) {
-//     if (!Number.isInteger(n)) {
-//       return res.status(400).json({
-//         error:"All elements must be integers."
-//       })
-//     }
-//   }
-
-//   const sum = numbers.reduce(
-//       (acc, cur) => acc + cur, 0)  // 求和。reduce：将数组压缩为一个值。
-//   const average = sum / numbers.length
-
-//   res.json({average: average})
 // })
 
 app.post('/api/gacha/proxy', async (req, res) => {
@@ -65,7 +37,7 @@ app.post('/api/gacha/proxy', async (req, res) => {
     //   return res.status(400).json({ error: 'URL 解析失败' });
     // }
 
-    console.log('正在转发请求,Payload:', payloads);
+    console.log('正在转发请求');
 
     const results = [];
 
@@ -76,7 +48,7 @@ app.post('/api/gacha/proxy', async (req, res) => {
         method: 'POST',
         data: payload,
         headers: {
-          // 伪造头部，模仿游戏内嵌浏览器的行为
+          // 伪造headers，模仿游戏内嵌浏览器的行为
           'Content-Type': 'application/json',
           'Accept': 'application/json, text/plain, */*',
           'Origin': 'https://aki-gm-resources.aki-game.com',
@@ -85,9 +57,9 @@ app.post('/api/gacha/proxy', async (req, res) => {
         }
       })
 
-      console.log('官方接口响应成功：', response.data.message);
+      console.log('官方接口响应成功：', response.data.message,' ','卡池编号：',payload.cardPoolType);
 
-      await saveRecords(response.data,response.data.playerId);
+      await saveRecords(response.data.data,response.data.playerId);
 
       const analyzedData = analyzePool(response.data.data);
 
@@ -98,6 +70,8 @@ app.post('/api/gacha/proxy', async (req, res) => {
     }
 
     res.json(results);
+
+    console.log('成功返回\nresults:', results);
 
   } catch (error) {
     console.error('转发失败:', error.response?.data || error.message);

@@ -1,11 +1,10 @@
 // 数据入库
-const pool = require('./db')
-async function saveRecords(records) {
-    const conn = await pool.getConnection();
-
+const { pool, query } = require('./db')
+async function saveRecords(records, uid) {
     try {
         for (let r of records) {
-            await conn.query('INSERT IGNORE INTO analyzer_records (uid, resource_id, resource_name, quality_level,pool_type,time,gacha_index,is_up) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            await query(
+                'INSERT IGNORE INTO analyzer_records (uid, resource_id, resource_name, quality_level,pool_type,time,gacha_index,is_up) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     uid,
                     r.resourceId,
@@ -22,3 +21,7 @@ async function saveRecords(records) {
         conn.release();
     }
 }
+
+module.exports = {
+    saveRecords
+};
