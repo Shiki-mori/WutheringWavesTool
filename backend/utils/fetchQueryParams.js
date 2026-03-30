@@ -1,7 +1,7 @@
 //该函数的作用是将parseGachaUrl返回的部分查询参数与卡池type参数组合，返回一个数组，数组中的每个元素都对应一条完整的查询参数
 const { parseGachaUrl } = require("./parseUrl")
 
-function fetchAll(url) {
+function fetchQueryParams(url) {
     const parsed = parseGachaUrl(url);
 
     const baseInfo = {
@@ -27,5 +27,5 @@ function fetchAll(url) {
 }
 
 module.exports = {
-    fetchAll
-};//导出fetchAll函数，使其可以在其他文件中被引入和使用。
+    fetchQueryParams
+};//导出fetchQueryParams函数，使其可以在其他文件中被引入和使用。

@@ -4,14 +4,15 @@ const cors = require('cors')        // 允许跨域访问
 
 const app = express()  // 创建一个Web服务器实例
 // const { parseGachaUrl } = require("./utils/parseUrl")//引入解析URL的工具函数
-const { fetchAll } = require("./utils/fetchAll")
+// const { fetchQueryParams } = require("./utils/fetchQueryParams")//引入fetchQueryParams函数，用于从URL中提取查询参数
+const { fetchAndSave } = require("./service/fetchAndSave")//引入fetchAndSave函数，用于从URL中提取查询参数，转发请求，并将结果保存到数据库
 const { analyzePool } = require("./utils/analyzePool")
-const {saveRecords}=require("./utils/saveRecords")
+// const {saveRecords}=require("./utils/saveRecords")
 
 app.use(
   cors())  // 注册一个中间件（在请求到达路由之前执行的处理函数），cors允许跨域访问
 app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
-app.use('./api/readRecords',recordsRouter) //注册读取记录的路由
+app.use('./api/readRecords', recordsRouter) //注册读取记录的路由
 // app.post('/analyze', (req, res)
 // => {//定义一个post接口，路径是/analyze。当收到post请求，并且路径是/analyze时执行此函数。该函数有两个参数req(请求)和res(响应)
 //     const data = req.body //读取前端发来的JSON
@@ -31,43 +32,38 @@ app.post('/api/gacha/proxy', async (req, res) => {
     // }
 
     const url = req.body.url;//从请求体中获取URL
-    const payloads = fetchAll(url);
+    const results = await fetchAndSave(url);
+    //const payloads = fetchQueryParams(url);
 
-    // if (!payloads || payloads.length === 0) {
-    //   return res.status(400).json({ error: 'URL 解析失败' });
-    // }
-
-    console.log('正在转发请求');
-
-    const results = [];
+    //const results = [];
 
     // 转发请求到目标服务器-游戏官方接口
-    for (const payload of payloads) {
-      const response = await axios({
-        url: 'https://gmserver-api.aki-game2.com/gacha/record/query',
-        method: 'POST',
-        data: payload,
-        headers: {
-          // 伪造headers，模仿游戏内嵌浏览器的行为
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/plain, */*',
-          'Origin': 'https://aki-gm-resources.aki-game.com',
-          'Referer': 'https://aki-gm-resources.aki-game.com/',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        }
-      })
+    // for (const payload of payloads) {
+    //   const response = await axios({
+    //     url: 'https://gmserver-api.aki-game2.com/gacha/record/query',
+    //     method: 'POST',
+    //     data: payload,
+    //     headers: {
+    //       // 伪造headers，模仿游戏内嵌浏览器的行为
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json, text/plain, */*',
+    //       'Origin': 'https://aki-gm-resources.aki-game.com',
+    //       'Referer': 'https://aki-gm-resources.aki-game.com/',
+    //       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    //     }
+    //   })
 
-      console.log('官方接口响应成功：', response.data.message,' ','卡池编号：',payload.cardPoolType);
+    //   console.log('官方接口响应成功：', response.data.message,' ','卡池编号：',payload.cardPoolType);
 
-      await saveRecords(response.data.data,response.data.playerId);
+    //   await saveRecords(response.data.data,response.data.playerId);
 
-      const analyzedData = analyzePool(response.data.data);
+    //   const analyzedData = analyzePool(response.data.data);
 
-      results.push({
-        poolType: payload.cardPoolType,
-        data: analyzedData
-      })
-    }
+    //   results.push({
+    //     poolType: payload.cardPoolType,
+    //     data: analyzedData
+    //   })
+    // }
 
     res.json(results);
 

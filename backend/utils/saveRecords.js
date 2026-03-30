@@ -1,12 +1,12 @@
 // 数据入库
 const { pool, query } = require('./db')
-async function saveRecords(records, uid) {
+async function saveRecords(records) {
     try {
         for (let r of records) {
             await query(
                 'INSERT IGNORE INTO analyzer_records (uid, resource_id, resource_name, quality_level,pool_type,time,gacha_index,is_up) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
-                    uid,
+                    r.playerId,
                     r.resourceId,
                     r.name,
                     r.qualityLevel,

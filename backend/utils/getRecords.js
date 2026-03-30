@@ -1,3 +1,4 @@
+//从数据库读取数据
 const { pool, query } = require('./db')
 
 async function getRecords() {
