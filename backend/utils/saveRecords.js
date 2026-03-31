@@ -1,24 +1,35 @@
 // 数据入库
-const { pool, query } = require('./db')
-async function saveRecords(records) {
+const { getConnection } = require('./db')
+const { isUpItem } = require('./isUpItem')
+
+async function saveRecords(recordGroups) {
+
+    const connection = await getConnection();
     try {
-        for (let r of records) {
-            await query(
-                'INSERT IGNORE INTO analyzer_records (uid, resource_id, resource_name, quality_level,pool_type,time,gacha_index,is_up) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                [
-                    r.playerId,
-                    r.resourceId,
-                    r.name,
-                    r.qualityLevel,
-                    r.cardPoolId,
-                    r.time,
-                    r.gacha_index,
-                    r.is_up
-                ]
-            );
+        for (const group of recordGroups) {
+            const playerId = group.playerId ?? null;
+            const records = group.records ?? [];
+
+            for (const record of records) {
+                const resourceId = record.resourceId ?? null;
+
+                await connection.execute(
+                    'INSERT IGNORE INTO analyzer_records (uid, resource_id, resource_name, quality_level,pool_type,time,gacha_index,is_up) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    [
+                        playerId,
+                        resourceId,
+                        record.name ?? null,
+                        record.qualityLevel ?? null,
+                        record.cardPoolId ?? null,
+                        record.time ?? null,
+                        record.gachaIndex ?? record.gacha_index ?? null,
+                        resourceId === null ? null : isUpItem(record)
+                    ]
+                );
+            }
         }
     } finally {
-        conn.release();
+        connection.release();
     }
 }
 

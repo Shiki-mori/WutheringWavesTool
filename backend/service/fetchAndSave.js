@@ -1,6 +1,6 @@
 const { fetchQueryParams } = require('../utils/fetchQueryParams');
 const { fetchRecords } = require('../utils/fetchRecords');
-const { saveRecords } = require('../utils/db');
+const { saveRecords } = require('../utils/saveRecords');
 
 async function fetchAndSave(url) {
     let queryParams = await fetchQueryParams(url);

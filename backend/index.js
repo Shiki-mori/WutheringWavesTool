@@ -7,12 +7,13 @@ const app = express()  // 创建一个Web服务器实例
 // const { fetchQueryParams } = require("./utils/fetchQueryParams")//引入fetchQueryParams函数，用于从URL中提取查询参数
 const { fetchAndSave } = require("./service/fetchAndSave")//引入fetchAndSave函数，用于从URL中提取查询参数，转发请求，并将结果保存到数据库
 const { analyzePool } = require("./utils/analyzePool")
+const readRecordsRouter = require('./api/readRecords')
 // const {saveRecords}=require("./utils/saveRecords")
 
 app.use(
   cors())  // 注册一个中间件（在请求到达路由之前执行的处理函数），cors允许跨域访问
 app.use(express.json())  // 自动把JSON请求体解析成JavaScript对象
-app.use('./api/readRecords', recordsRouter) //注册读取记录的路由
+app.use('/api/readRecords', readRecordsRouter) //注册读取记录的路由
 // app.post('/analyze', (req, res)
 // => {//定义一个post接口，路径是/analyze。当收到post请求，并且路径是/analyze时执行此函数。该函数有两个参数req(请求)和res(响应)
 //     const data = req.body //读取前端发来的JSON
@@ -67,7 +68,8 @@ app.post('/api/gacha/proxy', async (req, res) => {
 
     res.json(results);
 
-    console.log('成功返回\nresults:', results);
+    // console.log('成功返回\nresults:', results);
+    console.log(JSON.stringify(results, null, 2));
 
   } catch (error) {
     console.error('转发失败:', error.response?.data || error.message);

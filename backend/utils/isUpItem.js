@@ -1,13 +1,14 @@
 //判断是否为up角色
-const {PERMANENT_CHARACTERS}=require('../config/permanentConfig');
+const { PERMANENT_CHARACTERS } = require('../config/permanentConfig');
 
-function isUpItem(resourceId) {
-    if (PERMANENT_CHARACTERS.includes(Number(resourceId))){
-        return false;
+function isUpItem(record) {
+    if (record.qualityLevel === 5) {
+        if (PERMANENT_CHARACTERS.includes(Number(record.resourceId))) {
+            return false;
+        }
+        return true;
     }
-    return true;
 }
-
 module.exports = {
     isUpItem
 };

@@ -1,1 +1,1 @@
-重构fetchAndSave,fetchQueryParams,fetchRecords；本次改动尚未完成
+修复数据入库connection变量；saveRecords修正为读取单条记录；实现数据库连通

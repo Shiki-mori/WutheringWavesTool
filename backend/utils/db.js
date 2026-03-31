@@ -20,6 +20,10 @@ async function query(sql, params) {
     return rows;
 }
 
+async function getConnection() {
+    return pool.getConnection();
+}
+
 //测试数据库连接
 async function testConnection() {
     try {
@@ -33,4 +37,4 @@ async function testConnection() {
 
 testConnection();
 
-module.exports = { pool, query };
+module.exports = { pool, query, getConnection };

@@ -1,4 +1,5 @@
-//该函数以查询参数为输入，转发请求
+//该函数以查询参数为输入，转发请求，返回响应数据
+const axios = require('axios') 
 async function fetchRecords(payloads) {
     const results = [];
 
@@ -21,7 +22,7 @@ async function fetchRecords(payloads) {
 
         results.push({
             records: response.data.data,
-            playerId: response.data.playerId,
+            playerId: payload.playerId,
         })
     }
     return results;
@@ -29,4 +30,4 @@ async function fetchRecords(payloads) {
 
 module.exports = {
     fetchRecords
-};//导出fetchRecords函数，使其可以在其他文件中被引入和使用。
+};
