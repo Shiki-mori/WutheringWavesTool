@@ -23,8 +23,10 @@ async function fetchRecords(payloads) {
         results.push({
             records: response.data.data,
             playerId: payload.playerId,
+            cardPoolType: payload.cardPoolType// 该属性在response中将会丢失，必须在这里记录
         })
     }
+    console.log('获取到的记录数：', results.flatMap(group => group.records).length);
     return results;
 }
 

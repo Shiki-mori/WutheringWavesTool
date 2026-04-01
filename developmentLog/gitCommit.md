@@ -1,1 +1,5 @@
-修复数据入库connection变量；saveRecords修正为读取单条记录；实现数据库连通
+修复数据入库connection变量；saveRecords修正为读取单条记录；实现数据库连通；isUpItem传参出现错误，待修改
+
+修正isUpItem判断逻辑；新增预处理逻辑，为record添加两个参数；解决数据库重复去重的问题
+
+需要解决id排序在数据更新时引发混乱的问题

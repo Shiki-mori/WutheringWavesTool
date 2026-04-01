@@ -69,8 +69,8 @@ app.post('/api/gacha/proxy', async (req, res) => {
     res.json(results);
 
     // console.log('成功返回\nresults:', results);
-    console.log(JSON.stringify(results, null, 2));
-
+    // console.log(JSON.stringify(results, null, 2));
+    console.log('成功返回');
   } catch (error) {
     console.error('转发失败:', error.response?.data || error.message);
     res.status(500).json({

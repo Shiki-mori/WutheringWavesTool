@@ -25,7 +25,7 @@ function analyzePool(records) {
 
             fiveStarCount++;
 
-            const isUp = isUpItem(record.resourceId);
+            const isUp = isUpItem(record);
             if (isUp === true) {
                 upCount++;
                 upSeries++;
