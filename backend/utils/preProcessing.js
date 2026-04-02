@@ -20,9 +20,32 @@ function add_isUp(records) {
     }));
 }
 
+function add_inSecondSeq(records){
+    const chronological = (records ?? []).slice().reverse();
+
+    let lastTime=null;
+    let seq=0;
+
+    const enriched = chronological.map(record => {
+        if (record.time !== lastTime) {
+            lastTime = record.time;//使lastTime更新为当前记录的时间
+            seq = 0;//
+        }
+        else {
+            seq++;
+        }
+        return {
+            ...record,
+            inSecondSeq: seq
+        };
+    })
+
+    return enriched.reverse();//还原原始顺序
+}
+
 // 为每条记录添加参数
 function add_params(records) {
-    return add_gachaIndex(add_isUp(records));
+    return add_gachaIndex(add_isUp(add_inSecondSeq(records)));
 }
 
 module.exports = {

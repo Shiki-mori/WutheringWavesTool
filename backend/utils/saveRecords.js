@@ -11,7 +11,8 @@ async function saveRecords(recordGroups) {
 
             // console.log('开始录入数据...');
             const playerId = group.playerId ?? null;
-            const records = group.records ?? [];
+            // 接口返回通常是最新在前，这里反转后按最旧 -> 最新顺序入库
+            const records = (group.records ?? []).slice().reverse();
             const cardPoolType = group.cardPoolType ?? null;
 
             for (const record of records) {
