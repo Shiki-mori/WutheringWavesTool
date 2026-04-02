@@ -9,7 +9,12 @@ router.get('/records', async (req, res) => {
         res.json({
             code: 0,
             message: 'success',
-            data: await query('SELECT * FROM analyzer_records')
+            data: await query(`
+                SELECT * FROM analyzer_records
+                ORDER BY
+                    time ASC,
+                    in_second_seq ASC
+            `)
         })
     } catch (error) {
         console.error('读取记录失败:', error);
