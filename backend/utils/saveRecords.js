@@ -41,7 +41,7 @@ async function saveRecords(recordGroups) {
 
                 const resourceId = record.resourceId ?? null;
                 await connection.execute(
-                    `INSERT INTO analyzer_records
+                    `INSERT IGNORE INTO analyzer_records
                     (uid, resource_id, resource_name, quality_level, pool_type, time, in_second_seq, draw_order, is_up)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
