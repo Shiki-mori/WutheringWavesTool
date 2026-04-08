@@ -10,12 +10,12 @@ function getResourceName(record) {
 }
 
 function getIsUp(record) {
-    if (record.is_up !== undefined && record.is_up !== null) {
-        return Boolean(record.is_up);
+    if (Object.prototype.hasOwnProperty.call(record, 'is_up')) {
+        return record.is_up === null ? null : Boolean(record.is_up);
     }
 
-    if (record.isUp !== undefined && record.isUp !== null) {
-        return Boolean(record.isUp);
+    if (Object.prototype.hasOwnProperty.call(record, 'isUp')) {
+        return record.isUp === null ? null : Boolean(record.isUp);
     }
 
     return isUpItem({
@@ -61,10 +61,11 @@ function analyzePool(records) {
     const pityList = [];//记录每次出金的抽数（到当前抽数）
     let upCount = 0;//记录限定数量
 
-    let upSeries = 0;//记录连续up次数
-    let notupSeries = 0;//记录连歪次数
-    const upSeriesList = [];//记录连续up次数列表
-    const notupSeriesList = [];//记录连歪次数列表
+    let currentUpSeries = 0;//当前连续赢50/50次数
+    let currentNotupSeries = 0;//当前连续输50/50次数
+    let maxUpSeries = 0;//最大连续赢50/50次数
+    let maxNotupSeries = 0;//最大连续输50/50次数
+    let guaranteedUp = false;//上一金歪了后，下一金是否处于大保底
 
     const orderedRecords = sortRecordsForAnalyze(records);
 
@@ -77,17 +78,22 @@ function analyzePool(records) {
             const isUp = getIsUp(record);
             if (isUp === true) {
                 upCount++;
-                upSeries++;
-                if (notupSeries > 0) {
-                    notupSeriesList.push(notupSeries);
-                    notupSeries = 0;
+                if (guaranteedUp) {
+                    guaranteedUp = false;
+                } else {
+                    currentUpSeries++;
+                    currentNotupSeries = 0;
+                    maxUpSeries = Math.max(maxUpSeries, currentUpSeries);
                 }
             } else if (isUp === false) {
-                notupSeries++;
-                if (upSeries > 0) {
-                    upSeriesList.push(upSeries);
-                    upSeries = 0;
-                }
+                currentNotupSeries++;
+                currentUpSeries = 0;
+                maxNotupSeries = Math.max(maxNotupSeries, currentNotupSeries);
+                guaranteedUp = true;
+            } else {
+                currentUpSeries = 0;
+                currentNotupSeries = 0;
+                guaranteedUp = false;
             }
 
             pityList.push({
@@ -99,9 +105,6 @@ function analyzePool(records) {
             pity = 0; // 重置出金抽数，新一轮保底开始
         }
     }
-
-    upSeriesList.push(upSeries);//仅在up状态转换时记录。因此需要在循环结束后添加。
-    notupSeriesList.push(notupSeries);
 
     const avgPity = pityList.length ? (pityList.reduce((sum, item) => sum + item.count, 0) / pityList.length) : 0;
     const avgUp = upCount ? ((theTotal - pity) / upCount) : 0;
@@ -115,8 +118,8 @@ function analyzePool(records) {
         upRate: upRate.toFixed(4)*100 + '%',//up率
         pityList,
         "已垫": pity,
-        upSeries: upSeriesList.length ? Math.max(...upSeriesList) : 0,
-        notupSeries: notupSeriesList.length ? Math.max(...notupSeriesList) : 0
+        upSeries: maxUpSeries,
+        notupSeries: maxNotupSeries
     };
 }
 

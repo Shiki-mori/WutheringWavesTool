@@ -9,3 +9,5 @@
 in_second_seq字段可传入数据库；添加draw_order字段作为永久业务序号
 
 更新getRecords函数与readRecords接口；新增records.ts，为前端添加查询数据库功能，连通接口；修改analyzePool使其面向数据库查询结果，添加对应接口
+
+修改notupSeries计算逻辑；新建echarts路径；绘制基础图表

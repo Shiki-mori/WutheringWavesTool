@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "axios": "^1.13.6",
-    "vue": "^3.5.25"
+    "echarts": "^6.0.0",
+    "vue": "^3.5.25",
+    "vue-echarts": "^8.0.1"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
