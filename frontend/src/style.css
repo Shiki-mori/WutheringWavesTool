@@ -1,10 +1,10 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: #213547;
   background:
-    radial-gradient(circle at top, #f5efe3 0%, #f3ede2 24%, #efe8db 48%, #e8decf 100%);
+    radial-gradient(circle at top, #f8f1e5 0%, #f2eadf 26%, #ece2d3 54%, #e6d9c8 100%);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -12,19 +12,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: transparent;
 }
 
 h1 {
@@ -33,26 +25,24 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: transparent;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.card {
-  padding: 2em;
+button:focus,
+button:focus-visible {
+  outline: 3px solid rgba(194, 137, 47, 0.16);
+  outline-offset: 2px;
 }
 
 #app {

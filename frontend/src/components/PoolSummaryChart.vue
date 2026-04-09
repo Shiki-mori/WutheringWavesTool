@@ -75,9 +75,13 @@ const option = computed(() => ({
 
 <style scoped>
 .chart-panel {
+  margin-top: 10px;
+  padding: 18px 18px 10px;
   min-height: 420px;
+  border: 1px solid rgba(223, 207, 178, 0.75);
   border-radius: 24px;
-  background: #fff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 250, 242, 0.92) 100%);
+  box-shadow: 0 18px 30px rgba(52, 35, 12, 0.05);
 }
 
 .chart {
