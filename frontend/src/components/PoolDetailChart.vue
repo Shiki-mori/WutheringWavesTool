@@ -13,6 +13,12 @@
       </div>
     </header>
 
+    <VChart
+      v-if="isPoolOne"
+      class="detail-chart detail-chart-ring"
+      :option="ringOption"
+      autoresize
+    />
     <VChart class="detail-chart" :option="option" autoresize />
   </section>
 </template>
@@ -21,7 +27,7 @@
 import { computed } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import { BarChart } from 'echarts/charts'
+import { BarChart, PieChart } from 'echarts/charts'
 import {
   GridComponent,
   LegendComponent,
@@ -31,12 +37,78 @@ import {
 import VChart from 'vue-echarts'
 import type { PoolAnalyzeItem } from '../api/records'
 
-use([CanvasRenderer, BarChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent])
+use([
+  CanvasRenderer,
+  BarChart,
+  PieChart,
+  GridComponent,
+  LegendComponent,
+  TitleComponent,
+  TooltipComponent
+])
 
 const props = defineProps<{
   pool: PoolAnalyzeItem
   poolLabel: string
 }>()
+
+const isPoolOne = computed(() => props.pool.poolType === 1)
+
+const UP_GREEN = '#2f9e44'
+const NOT_UP_RED = '#d94841'
+const UNKNOWN_GRAY = '#868e96'
+
+const ringOption = computed(() => {
+  const list = props.pool.data.pityList
+  const data = list.map((item, index) => {
+    const color =
+      item.isUp === true ? UP_GREEN : item.isUp === false ? NOT_UP_RED : UNKNOWN_GRAY
+    return {
+      value: 1,
+      name: item.name || `五星 ${index + 1}`,
+      itemStyle: { color },
+      pity: item.count,
+      isUp: item.isUp
+    }
+  })
+
+  return {
+    title: {
+      text: '五星 UP / 歪',
+      // subtext: '自旧至新顺时针，每段为一金；绿=限定，红=歪'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter: (params: {
+        name: string
+        data: { pity: number; isUp: boolean | null }
+      }) => {
+        const tag =
+          params.data.isUp === true ? '限定' : params.data.isUp === false ? '歪' : '未知'
+        return `${params.name}<br/>出金抽数：${params.data.pity}<br/>${tag}`
+      }
+    },
+    series: [
+      {
+        name: '五星',
+        type: 'pie',
+        radius: ['42%', '68%'],
+        clockwise: true,
+        startAngle: 90,
+        avoidLabelOverlap: true,
+        label: {
+          show: list.length <= 16,
+          formatter: '{b}',
+          fontSize: 11
+        },
+        labelLine: {
+          show: list.length <= 16
+        },
+        data
+      }
+    ]
+  }
+})
 
 function getPityColor(count: number) {
   if (count <= 40) {
@@ -159,6 +231,11 @@ h3 {
 .detail-chart {
   width: 100%;
   min-height: 420px;
+}
+
+.detail-chart-ring {
+  min-height: 340px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 860px) {
