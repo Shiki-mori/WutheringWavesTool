@@ -79,6 +79,7 @@ const ringOption = computed(() => {
   })
 
   return {
+    // 文本字体
     textStyle: {
       fontFamily: '"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
       fontSize: 13,
