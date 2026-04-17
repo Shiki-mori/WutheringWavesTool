@@ -1,13 +1,13 @@
 <template>
   <section class="chart-panel">
-    <VChart class="chart" :option="option" autoresize />
+    <VChart class="chart" :init-options="chartInitOptions" :option="option" autoresize />
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
+import { SVGRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
 import {
   GridComponent,
@@ -18,15 +18,28 @@ import {
 import VChart from 'vue-echarts'
 import type { PoolAnalyzeItem } from '../api/records'
 
-use([CanvasRenderer, BarChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent])
+use([SVGRenderer, BarChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent])
 
 const props = defineProps<{
   pools: PoolAnalyzeItem[]
 }>()
 
+const chartInitOptions = { renderer: 'svg' as const }
+
 const option = computed(() => ({
+  textStyle: {
+    fontFamily: '"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
+    fontSize: 13,
+    fontWeight: 500,
+    color: '#231a11'
+  },
   title: {
-    text: '卡池抽卡总览'
+    text: '卡池抽卡总览',
+    textStyle: {
+      fontSize: 18,
+      fontWeight: 700,
+      color: '#231a11'
+    }
   },
   tooltip: {
     trigger: 'axis'
@@ -45,10 +58,20 @@ const option = computed(() => ({
     axisTick: {
       alignWithLabel: true
     },
+    axisLabel: {
+      fontSize: 12,
+      fontWeight: 600,
+      color: '#231a11'
+    },
     data: props.pools.map((item) => `卡池 ${item.poolType}`)
   },
   yAxis: {
-    type: 'value'
+    type: 'value',
+    axisLabel: {
+      fontSize: 12,
+      fontWeight: 600,
+      color: '#231a11'
+    }
   },
   series: [
     {

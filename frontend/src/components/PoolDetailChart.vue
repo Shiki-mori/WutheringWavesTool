@@ -17,10 +17,11 @@
       <VChart
         v-if="isPoolOne"
         class="detail-chart detail-chart-ring"
+        :init-options="chartInitOptions"
         :option="ringOption"
         autoresize
       />
-      <VChart class="detail-chart" :option="option" autoresize />
+      <VChart class="detail-chart" :init-options="chartInitOptions" :option="option" autoresize />
     </div>
   </section>
 </template>
@@ -28,7 +29,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
+import { SVGRenderer } from 'echarts/renderers'
 import { BarChart, PieChart } from 'echarts/charts'
 import {
   GridComponent,
@@ -40,7 +41,7 @@ import VChart from 'vue-echarts'
 import type { PoolAnalyzeItem } from '../api/records'
 
 use([
-  CanvasRenderer,
+  SVGRenderer,
   BarChart,
   PieChart,
   GridComponent,
@@ -53,6 +54,8 @@ const props = defineProps<{
   pool: PoolAnalyzeItem
   poolLabel: string
 }>()
+
+const chartInitOptions = { renderer: 'svg' as const }
 
 const isPoolOne = computed(() => props.pool.poolType === 1)
 
@@ -76,9 +79,19 @@ const ringOption = computed(() => {
   })
 
   return {
+    textStyle: {
+      fontFamily: '"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
+      fontSize: 13,
+      fontWeight: 500,
+      color: '#231a11'
+    },
     title: {
       text: '五星 UP / 歪',
-      // subtext: '自旧至新顺时针，每段为一金；绿=限定，红=歪'
+      textStyle: {
+        fontSize: 18,
+        fontWeight: 700,
+        color: '#231a11'
+      }
     },
     tooltip: {
       trigger: 'item',
@@ -102,7 +115,9 @@ const ringOption = computed(() => {
         label: {
           show: list.length <= 16,
           formatter: '{b}',
-          fontSize: 11
+          fontSize: 12,
+          fontWeight: 600,
+          color: '#231a11'
         },
         labelLine: {
           show: list.length <= 16
@@ -153,8 +168,19 @@ const option = computed(() => {
   const items = detailBarItems.value
 
   return {
+    textStyle: {
+      fontFamily: '"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
+      fontSize: 13,
+      fontWeight: 500,
+      color: '#231a11'
+    },
     title: {
-      text: '出金抽数分布'
+      text: '出金抽数分布',
+      textStyle: {
+        fontSize: 18,
+        fontWeight: 700,
+        color: '#231a11'
+      }
     },
     tooltip: {
       trigger: 'item',
@@ -179,13 +205,26 @@ const option = computed(() => {
     },
     xAxis: {
       type: 'value',
-      name: '抽数'
+      name: '抽数',
+      nameTextStyle: {
+        fontSize: 13,
+        fontWeight: 600,
+        color: '#231a11'
+      },
+      axisLabel: {
+        fontSize: 12,
+        fontWeight: 600,
+        color: '#231a11'
+      }
     },
     yAxis: {
       type: 'category',
       inverse: true,
       axisLabel: {
-        interval: 0
+        interval: 0,
+        fontSize: 12,
+        fontWeight: 600,
+        color: '#231a11'
       },
       data: items.map((item) => item.name)
     },
@@ -197,6 +236,9 @@ const option = computed(() => {
         label: {
           show: true,
           position: 'right',
+          fontSize: 12,
+          fontWeight: 700,
+          color: '#231a11',
           formatter: ({
             data
           }: {
@@ -236,14 +278,15 @@ const option = computed(() => {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(180deg, rgba(255, 252, 246, 0.4) 0%, rgba(255, 247, 234, 0.3) 100%),
+    /* linear-gradient(180deg, rgba(255, 252, 246, 0.4) 0%, rgba(255, 247, 234, 0.3) 100%), */
+    linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%),
     url('/images/pool-detail-bg.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   /* background-blend-mode: screen; */
   background-blend-mode: normal;
-  filter: saturate(1.2) brightness(1.15) contrast(0.98);
+  filter: saturate(1.2) brightness(1.15) contrast(1.00);
   /* 不透明度 */
   opacity: 0.70;
   pointer-events: none;
