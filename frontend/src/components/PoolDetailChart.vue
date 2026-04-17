@@ -1,25 +1,27 @@
 <template>
   <section class="detail-panel">
-    <header class="detail-header">
-      <div>
-        <p class="detail-eyebrow">单卡池详情</p>
-        <h3>{{ poolLabel }}</h3>
-      </div>
-      <div class="detail-metrics">
-        <span>总抽数 {{ pool.data.total }}</span>
-        <span>五星 {{ pool.data.fiveStar }}</span>
-        <span>平均出金 {{ pool.data.avgPity }}</span>
-        <span>UP率 {{ pool.data.upRate }}</span>
-      </div>
-    </header>
+    <div class="detail-content">
+      <header class="detail-header">
+        <div>
+          <p class="detail-eyebrow">单卡池详情</p>
+          <h3>{{ poolLabel }}</h3>
+        </div>
+        <div class="detail-metrics">
+          <span>总抽数 {{ pool.data.total }}</span>
+          <span>五星 {{ pool.data.fiveStar }}</span>
+          <span>平均出金 {{ pool.data.avgPity }}</span>
+          <span>UP率 {{ pool.data.upRate }}</span>
+        </div>
+      </header>
 
-    <VChart
-      v-if="isPoolOne"
-      class="detail-chart detail-chart-ring"
-      :option="ringOption"
-      autoresize
-    />
-    <VChart class="detail-chart" :option="option" autoresize />
+      <VChart
+        v-if="isPoolOne"
+        class="detail-chart detail-chart-ring"
+        :option="ringOption"
+        autoresize
+      />
+      <VChart class="detail-chart" :option="option" autoresize />
+    </div>
   </section>
 </template>
 
@@ -54,15 +56,16 @@ const props = defineProps<{
 
 const isPoolOne = computed(() => props.pool.poolType === 1)
 
-const UP_GREEN = '#2f9e44'
-const NOT_UP_RED = '#d94841'
-const UNKNOWN_GRAY = '#868e96'
+const LIGHT_GREEN = '#8fd9a8'
+const LEMON_YELLOW = '#f6e96b'
+const ROSE_RED = '#f08aa1'
+const UNKNOWN_GRAY = '#c7ccd6'
 
 const ringOption = computed(() => {
   const list = props.pool.data.pityList
   const data = list.map((item, index) => {
     const color =
-      item.isUp === true ? UP_GREEN : item.isUp === false ? NOT_UP_RED : UNKNOWN_GRAY
+      item.isUp === true ? LIGHT_GREEN : item.isUp === false ? ROSE_RED : UNKNOWN_GRAY
     return {
       value: 1,
       name: item.name || `五星 ${index + 1}`,
@@ -112,34 +115,60 @@ const ringOption = computed(() => {
 
 function getPityColor(count: number) {
   if (count <= 40) {
-    return '#2f9e44'
+    return LIGHT_GREEN
   }
 
   if (count <= 65) {
-    return '#e0a106'
+    return LEMON_YELLOW
   }
 
-  return '#d94841'
+  return ROSE_RED
 }
 
-const option = computed(() => {
-  const items = props.pool.data.pityList.map((item, index) => ({
+const detailBarItems = computed(() => {
+  const currentPityItem = {
+    value: props.pool.data.已垫,
+    name: '?',
+    isUp: null as boolean | null,
+    isCurrentPity: true,
+    itemStyle: {
+      color: getPityColor(props.pool.data.已垫)
+    }
+  }
+
+  const historyItems = props.pool.data.pityList.map((item, index) => ({
     value: item.count,
     name: item.name || `未命名五星 ${index + 1}`,
     isUp: item.isUp,
+    isCurrentPity: false,
     itemStyle: {
       color: getPityColor(item.count)
     }
   }))
+
+  return [currentPityItem, ...historyItems]
+})
+
+const option = computed(() => {
+  const items = detailBarItems.value
 
   return {
     title: {
       text: '出金抽数分布'
     },
     tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
+      trigger: 'item',
+      formatter: (params: {
+        name: string
+        data: { value: number; isUp: boolean | null; isCurrentPity: boolean }
+      }) => {
+        if (params.data.isCurrentPity) {
+          return `当前已垫<br/>抽数：${params.data.value}`
+        }
+
+        const tag =
+          params.data.isUp === true ? '限定' : params.data.isUp === false ? '歪' : '未知'
+        return `${params.name}<br/>出金抽数：${params.data.value}<br/>${tag}`
       }
     },
     grid: {
@@ -154,6 +183,7 @@ const option = computed(() => {
     },
     yAxis: {
       type: 'category',
+      inverse: true,
       axisLabel: {
         interval: 0
       },
@@ -167,8 +197,17 @@ const option = computed(() => {
         label: {
           show: true,
           position: 'right',
-          formatter: ({ data }: { data: { value: number; isUp: boolean | null } }) =>
-            data.isUp === false ? `${data.value} 歪` : `${data.value}`
+          formatter: ({
+            data
+          }: {
+            data: { value: number; isUp: boolean | null; isCurrentPity: boolean }
+          }) => {
+            if (data.isCurrentPity) {
+              return `${data.value}`
+            }
+
+            return data.isUp === false ? `${data.value} 歪` : `${data.value}`
+          }
         },
         data: items
       }
@@ -179,6 +218,8 @@ const option = computed(() => {
 
 <style scoped>
 .detail-panel {
+  position: relative;
+  overflow: hidden;
   margin-top: 20px;
   padding: 24px;
   border-radius: 26px;
@@ -187,6 +228,30 @@ const option = computed(() => {
     linear-gradient(180deg, #fffdfa 0%, #fff7ea 100%);
   border: 1px solid #efe1c7;
   box-shadow: 0 18px 30px rgba(52, 35, 12, 0.06);
+}
+
+/* 背景图处理逻辑 */
+.detail-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.4) 0%, rgba(255, 247, 234, 0.3) 100%),
+    url('/images/pool-detail-bg.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-blend-mode: screen; */
+  background-blend-mode: normal;
+  filter: saturate(1.2) brightness(1.15) contrast(0.98);
+  /* 不透明度 */
+  opacity: 0.70;
+  pointer-events: none;
+}
+
+.detail-content {
+  position: relative;
+  z-index: 1;
 }
 
 .detail-header {

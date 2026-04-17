@@ -68,7 +68,7 @@
         <section v-if="detailPools.length" class="detail-section">
           <div class="detail-title-row">
             <div>
-              <p class="detail-kicker">二级页面</p>
+              <!-- <p class="detail-kicker">二级页面</p> -->
               <h3 class="detail-title">单个卡池信息</h3>
             </div>
           </div>
@@ -120,10 +120,10 @@ const analyzeResult = ref<PoolAnalyzeItem[]>([])
 const activePoolType = ref<number | null>(null)
 
 const poolLabelMap: Record<number, string> = {
-  1: '卡池一',
-  2: '卡池二',
-  3: '卡池三',
-  4: '卡池四'
+  1: '角色活动唤取',
+  2: '武器活动唤取',
+  3: '常驻角色',
+  4: '常驻武器'
 }
 
 const summaryCards = computed(() => {

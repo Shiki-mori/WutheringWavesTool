@@ -49,7 +49,7 @@ function sortRecordsForAnalyze(records) {
         });
     }
 
-    // 官方接口原始返回通常是最新在前。
+    // 官方接口原始返回是最新在前
     return records.slice().reverse();
 }
 
