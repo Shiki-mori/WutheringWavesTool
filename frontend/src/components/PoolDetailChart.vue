@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, h } from 'vue'
 import { use } from 'echarts/core'
 import { SVGRenderer } from 'echarts/renderers'
 import { BarChart, PieChart } from 'echarts/charts'
@@ -162,7 +162,8 @@ const detailBarItems = computed(() => {
     }
   }))
 
-  return [currentPityItem, ...historyItems]
+  // return [currentPityItem, ...historyItems]
+  return [...historyItems, currentPityItem]
 })
 
 const option = computed(() => {
@@ -220,7 +221,7 @@ const option = computed(() => {
     },
     yAxis: {
       type: 'category',
-      inverse: true,
+      // inverse: true,
       axisLabel: {
         interval: 0,
         fontSize: 12,
