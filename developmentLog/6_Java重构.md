@@ -112,3 +112,33 @@ java -version
 ```text
 Tomcat started on port 8080
 ```
+
+成功启动Spring Boot。  
+
+接下来需要更改前端代码，连通java后端和前端。
+
+# 接入前端
+
+vue调用Spring Boot，返回数据。
+
+后端现有结构：
+
+```java
+package gacha_backend;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GachaBackendApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(GachaBackendApplication.class, args);
+    }
+
+}
+```
+
+需要新增Controller接口，让前端能访问。
+
+在gacha_backend下新建controller包，新建TestController.java文件。

@@ -40,3 +40,69 @@
 ## 完成SSH免密配置
 
 提交测试。
+
+## 启动脚本run.sh
+
+编写`run.sh`，给予执行权限：
+
+```bash
+chmod +x run.sh
+```
+
+`#!/bin/bash`表示脚本使用bash解释器执行。
+
+`cd backend || exit`表示进入backend目录，如果失败则立即退出。
+
+`gnome-terminal -- bash -c "npm run dev; exec bash"`表示在打开新的终端中，在其中运行`npm run dev`命令，并在终端执行完成后不自动关闭（便于在程序退出时查看报错信息）。
+
+执行后报错：
+
+```text
+./run.sh: 行 9: gnome-terminal: 未找到命令
+```
+
+说明系统没有安装`gnome-terminal`。
+
+在opensuse系统中，测试存在的终端：
+
+```bash
+which konsole
+which xfce4-terminal
+which xterm
+```
+
+其中xterm有输出，可修改为：
+
+```bash
+echo "启动后端..."
+cd backend_node || exit
+xterm -hold -e "node index.js" &
+
+echo "启动前端..."
+cd ../frontend || exit
+xterm -hold -e "npm run dev" &
+```
+
+但是xterm的界面过于原始。  
+当前的桌面环境是gnome，直接安装gnome官方终端：
+
+```bash
+sudo zypper install gnome-terminal
+```
+
+安装后可使用最初的run.sh版本。
+
+该版本为3.60.0，而平时默认使用的版本为49.1。  
+这是GNOME新增的终端应用GNOME Console，其命令为kgx。
+
+因此将启动脚本改为kgx版本。
+
+## 使用concurrently代替启动脚本
+
+安装concurrently：
+
+```bash
+npm install concurrently --save-dev
+```
+
+在
