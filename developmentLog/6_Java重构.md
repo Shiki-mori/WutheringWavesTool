@@ -121,6 +121,8 @@ Tomcat started on port 8080
 
 vue调用Spring Boot，返回数据。
 
+## 后端新增Controller接口
+
 后端现有结构：
 
 ```java
@@ -139,6 +141,19 @@ public class GachaBackendApplication {
 }
 ```
 
+这是Spring Boot项目的启动类。项目入口正常。
+
 需要新增Controller接口，让前端能访问。
 
 在gacha_backend下新建controller包，新建TestController.java文件。
+
+在java项目根目录执行spring boot启动命令：
+
+```bash
+./mvnw spring-boot:run
+```
+
+打开url：<http://localhost:8080/hello>，看到`Hello Spring Boot!`输出信息，说明后端已经启动成功。
+
+## 前端修改为调用Spring Boot
+

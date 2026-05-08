@@ -60,7 +60,7 @@ mvn dependency:build-classpath
 
 1. 打开侧边栏：
     - 点击左侧活动栏中的 Java Projects 图标（通常是一个咖啡杯图标 ☕）。  
-    - 如果没有看到，可以通过菜单栏 View -> Open View... -> 输入 Java Projects 打开。  
+    - 如果没有看到，可以通过菜单栏 View -> Open View... -> 输入 `Java Projects` 打开。  
 2. 展开依赖树：  
 
     - 在你的项目名（backend_java）下，找到 Maven Dependencies 节点。  
