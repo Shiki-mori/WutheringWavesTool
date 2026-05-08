@@ -157,3 +157,20 @@ public class GachaBackendApplication {
 
 ## 前端修改为调用Spring Boot
 
+将frontend/src/api/request.ts中的url从3000修改为8080。  
+
+新建一个测试用的vue文件frontend/src/views/test.vue。
+
+备份App.vue，将其内容指向刚刚新建的测试vue页面：
+
+```js
+<script setup lang="ts">
+    import Test from './views/Test.vue'
+</script>
+
+<template>
+    <Test />
+</template>
+```
+
+运行前端`npm run dev`，看到浏览器控制台输出`Hello Spring Boot!`，说明前后端基础联通完成。
