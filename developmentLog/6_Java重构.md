@@ -174,3 +174,19 @@ public class GachaBackendApplication {
 ```
 
 运行前端`npm run dev`，看到浏览器控制台输出`Hello Spring Boot!`，说明前后端基础联通完成。
+
+接下来开始重构。
+
+让codex理解：
+
+- 当前系统架构
+- 数据流
+- 数据库设计
+- API 结构
+- Node 中间件机制
+- 抽卡业务逻辑
+- 哪些代码需要保留
+- 哪些应该重构
+- Java 技术栈如何映射
+
+然后让它输出“迁移路线图 + 分层设计 + 重构优先级”。
