@@ -1,1 +1,2 @@
-./mvnw spring-boot:run
+cd backend_java
+mvn spring-boot:run

@@ -1,4 +1,4 @@
-package gacha_backend.controller;
+package com.phrolova.gachaanlyzer.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;  // 处理HTTP GET请求
 import org.springframework.web.bind.annotation.RestController;  // 标识这是一个RESTful风格的控制器
