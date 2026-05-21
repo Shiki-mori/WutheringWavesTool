@@ -509,3 +509,22 @@ sudo rm /etc/zypp/repos.d/mysql-community.repo.rpmsave
 ```bash
 sudo systemctl enable mariadb
 ```
+
+# dbeaver连接mariadb
+
+创建一个普通数据库用户：
+
+```sql
+create user 'dbeaver'@'localhost' identified by 'password';
+```
+
+授权：
+
+```sql
+grant all privileges on *.* to 'dbeaver'@'localhost';
+flush privileges;
+```
+
+启动dbeaver，连接数据库。  
+填写username：dbeaver，password：password。  
+点击test connection，下载驱动，完成后连接。
