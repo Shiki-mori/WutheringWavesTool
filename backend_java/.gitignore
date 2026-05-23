@@ -32,3 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 .codex
+
+**/test/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log

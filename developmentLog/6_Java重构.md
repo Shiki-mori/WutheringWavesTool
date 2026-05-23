@@ -190,3 +190,9 @@ public class GachaBackendApplication {
 - Java 技术栈如何映射
 
 然后让它输出“迁移路线图 + 分层设计 + 重构优先级”。
+
+# 项目结构
+
+使用一个父工程gachaanalyzer聚合多个子工程的maven多模块工程结构。
+
+在backend_java下maven-新建module，选择父工程为gachaanalyzer，新建三个子工程gacha-common,gacha-pojo,gacha-server。
