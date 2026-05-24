@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const request=axios.create({
-    // baseURL:'http://localhost:3000',
-    baseURL:'http://localhost:8080',
+    // 使用相对路径，交由 nginx(8081) 反向代理到后端
+    baseURL:'/',
     timeout:5000
 })
 
