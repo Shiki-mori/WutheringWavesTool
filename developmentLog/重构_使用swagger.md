@@ -26,3 +26,11 @@
 可在<localhost:8081/doc.html>查看接口文档。
 
 <!-- codex resume 019e5a07-f441-7b33-b51f-efb31c4e4fdb -->
+
+该版本与spring boot版本不兼容，访问页面时显示knife4j文档请求异常。
+
+升级knife4j版本，做如下改动：
+
+1. 父 pom 切换到 Jakarta 版 Knife4j 坐标与版本；
+2. gacha-server 显式引入该依赖；
+3. 把旧 SwaggerConfig 从 Springfox Docket 改成 OpenAPI3 配置类。
