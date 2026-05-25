@@ -1,5 +1,7 @@
 # swagger
 
+<!-- codex resume 019e5a07-f441-7b33-b51f-efb31c4e4fdb -->
+
 在`pom.xml`中添加swagger的maven依赖：
 
 ```xml
@@ -24,8 +26,6 @@
 在nginx配置中添加swagger相关路径的代理。
 
 可在<localhost:8081/doc.html>查看接口文档。
-
-<!-- codex resume 019e5a07-f441-7b33-b51f-efb31c4e4fdb -->
 
 该版本与spring boot版本不兼容，访问页面时显示knife4j文档请求异常。
 
