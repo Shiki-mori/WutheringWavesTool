@@ -12,10 +12,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 // 扫描gacha_server下的所有类
 // 创建并管理对象
 @EnableTransactionManagement
+// 开启注解方式的事务管理
+// 允许使用 @Transactional 注解来控制数据库事务
 @Slf4j
 public class GachaAnalyzer {
     public static void main(String[] args) {
         SpringApplication.run(GachaAnalyzer.class, args);
-        System.out.println("Hello world!");
+        log.info("server started...");
     }
 }
