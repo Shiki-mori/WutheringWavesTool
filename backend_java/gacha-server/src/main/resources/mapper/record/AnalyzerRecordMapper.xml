@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phrolova.gacha.server.mapper.AnalyzerRecordMapper">
+
+    <resultMap id="AnalyzerRecordResultMap" type="com.phrolova.gacha.pojo.entity.AnalyzerRecordEntity">
+        <id column="id" property="id"/>
+        <result column="uid" property="uid"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="resource_name" property="resourceName"/>
+        <result column="is_up" property="isUp"/>
+        <result column="quality_level" property="qualityLevel"/>
+        <result column="pool_type" property="poolType"/>
+        <result column="time" property="time"/>
+        <result column="in_second_seq" property="inSecondSeq"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="draw_order" property="drawOrder"/>
+    </resultMap>
+
+    <sql id="BaseColumnList">
+        id,
+        uid,
+        resource_id,
+        resource_name,
+        is_up,
+        quality_level,
+        pool_type,
+        time,
+        in_second_seq,
+        created_at,
+        draw_order
+    </sql>
+
+    <select id="countAll" resultType="java.lang.Long">
+        select count(*)
+        from analyzer_records
+    </select>
+
+    <select id="selectById" resultMap="AnalyzerRecordResultMap">
+        select
+        <include refid="BaseColumnList"/>
+        from analyzer_records
+        where id = #{id}
+    </select>
+
+    <select id="selectByUidAndPoolType" resultMap="AnalyzerRecordResultMap">
+        select
+        <include refid="BaseColumnList"/>
+        from analyzer_records
+        where uid = #{uid}
+          and pool_type = #{poolType}
+        order by time asc, in_second_seq asc, id asc
+    </select>
+</mapper>
