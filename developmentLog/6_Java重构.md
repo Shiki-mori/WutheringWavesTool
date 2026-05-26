@@ -205,3 +205,83 @@ public class GachaBackendApplication {
 
 - gacha-server  
     放启动类、Controller、Service、Mapper、Config、Handler、Integration Client
+
+• 下一步建议进入“记录查询模块”的正式骨架，而不是马上迁移导入/分析算法。
+
+  推荐下一阶段：完成记录查询 API
+
+  目标：把现在的 /api/records/count 从测试接口扩展成可用的查询模块。
+
+  建议顺序：
+
+  1. 完善 AnalyzerRecordEntity
+     确认字段类型、表字段映射、时间类型都稳定。
+  2. 新增查询 DTO
+     例如：
+
+  RecordQueryDTO
+  - uid
+  - poolType
+  - page
+  - pageSize
+  - startTime
+  - endTime
+
+  3. 新增返回 VO
+     例如：
+
+  RecordVO
+  - id
+  - uid
+  - resourceName
+  - qualityLevel
+  - poolType
+  - time
+  - drawOrder
+  - isUp
+
+  4. 扩展 Mapper
+     先做简单查询：
+
+  selectListByCondition
+  countByCondition
+  selectById
+
+  暂时不要引入复杂分页插件，先用 limit offset 跑通。
+
+  5. 扩展 Service
+     Controller 不直接碰 Mapper，分页参数、默认值、校验逻辑放 Service。
+  6. 新增 API
+     建议：
+
+  GET /api/records/count
+  GET /api/records
+  GET /api/records/{id}
+
+  7. 加参数校验
+     用 @Validated、@Min、@Max、@NotBlank 控制查询参数。
+  8. 再做统一异常增强
+     现在 GlobalExceptionHandler 只处理了业务异常，下一步应该补：
+
+  - 参数校验异常
+  - SQL/数据库异常
+  - 兜底异常
+
+  为什么先做查询模块
+
+  查询模块风险最低，能继续验证：
+
+  Controller -> Service -> Mapper -> MySQL -> VO -> Result
+
+  这条链路稳定后，再迁移“抽卡导入”和“分析算法”会更稳。
+
+  建议下一个任务描述
+
+  请实现记录查询模块的基础 API：
+  1. 新增 RecordQueryDTO
+  2. 新增 RecordVO
+  3. 扩展 AnalyzerRecordMapper XML
+  4. 新增 GET /api/records
+  5. 新增 GET /api/records/{id}
+  6. 保持 Controller / Service / Mapper 分层
+  7. 不迁移抽卡导入和分析逻辑
