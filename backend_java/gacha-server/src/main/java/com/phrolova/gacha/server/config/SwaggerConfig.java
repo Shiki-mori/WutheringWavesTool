@@ -11,6 +11,7 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI gachaOpenApi() {
+        System.out.println("Generating OpenAPI documentation...");
         return new OpenAPI()
                 .info(new Info()
                         .title("Gacha API Documentation")
