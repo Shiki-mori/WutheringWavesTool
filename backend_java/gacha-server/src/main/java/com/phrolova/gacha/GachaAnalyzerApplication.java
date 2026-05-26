@@ -1,4 +1,4 @@
-package com.phrolova;
+package com.phrolova.gacha;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 // 开启注解方式的事务管理
 // 允许使用 @Transactional 注解来控制数据库事务
 @Slf4j
-public class GachaAnalyzer {
+public class GachaAnalyzerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(GachaAnalyzer.class, args);
+        SpringApplication.run(GachaAnalyzerApplication.class, args);
         log.info("server started...");
     }
 }

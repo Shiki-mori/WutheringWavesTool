@@ -1,4 +1,4 @@
-package com.phrolova.exception;
+package com.phrolova.gacha.common.exception;
 
 // 业务异常
 public class BaseException extends RuntimeException{

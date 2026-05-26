@@ -1,4 +1,4 @@
-package com.phrolova.result;
+package com.phrolova.gacha.common.result;
 
 import lombok.Data;
 

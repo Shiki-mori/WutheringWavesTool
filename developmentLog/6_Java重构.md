@@ -196,3 +196,12 @@ public class GachaBackendApplication {
 使用一个父工程gachaanalyzer聚合多个子工程的maven多模块工程结构。
 
 在backend_java下maven-新建module，选择父工程为gachaanalyzer，新建三个子工程gacha-common,gacha-pojo,gacha-server。
+
+- gacha-common  
+    放通用结果、异常、常量、工具、枚举
+
+- gacha-pojo  
+    放 Entity、DTO、VO、第三方接口请求/响应对象
+
+- gacha-server  
+    放启动类、Controller、Service、Mapper、Config、Handler、Integration Client

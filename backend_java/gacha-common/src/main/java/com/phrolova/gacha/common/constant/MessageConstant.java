@@ -1,4 +1,4 @@
-package com.phrolova.constant;
+package com.phrolova.gacha.common.constant;
 
 // 信息提示常量类
 public class MessageConstant {

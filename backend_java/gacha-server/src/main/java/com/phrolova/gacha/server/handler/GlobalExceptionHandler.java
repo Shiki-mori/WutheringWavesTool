@@ -1,7 +1,7 @@
-package com.phrolova.handler;
+package com.phrolova.gacha.server.handler;
 
-import com.phrolova.exception.BaseException;
-import com.phrolova.result.Result;
+import com.phrolova.gacha.common.exception.BaseException;
+import com.phrolova.gacha.common.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

@@ -35,6 +35,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<knife4j>4.5.0</knife4j>
+		<mybatis.spring.boot.version>3.0.4</mybatis.spring.boot.version>
 	</properties>
 	<dependencies>
 		<dependency>
