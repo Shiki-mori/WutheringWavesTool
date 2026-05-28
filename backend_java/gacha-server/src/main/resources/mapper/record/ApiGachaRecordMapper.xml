@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phrolova.gacha.server.mapper.ApiGachaRecordMapper">
+
+    <resultMap id="ApiGachaRecordResultMap" type="com.phrolova.gacha.pojo.entity.ApiGachaRecord">
+        <id column="id" property="id"/>
+        <result column="account_id" property="accountId"/>
+        <result column="pool_id" property="poolId"/>
+        <result column="pool_type" property="poolType"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="business_key" property="businessKey"/>
+        <result column="import_task_id" property="importTaskId"/>
+        <result column="draw_time" property="drawTime"/>
+        <result column="in_second_seq" property="inSecondSeq"/>
+        <result column="api_draw_order" property="apiDrawOrder"/>
+        <result column="logical_order" property="logicalOrder"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="BaseColumnList">
+        id,
+        account_id,
+        pool_id,
+        pool_type,
+        resource_id,
+        business_key,
+        import_task_id,
+        draw_time,
+        in_second_seq,
+        api_draw_order,
+        logical_order,
+        created_at,
+        updated_at
+    </sql>
+
+    <select id="countAll" resultType="java.lang.Long">
+        select count(*)
+        from api_gacha_record
+    </select>
+
+    <select id="selectById" resultMap="ApiGachaRecordResultMap">
+        select
+        <include refid="BaseColumnList"/>
+        from api_gacha_record
+        where id = #{id}
+    </select>
+
+    <select id="selectByAccountIdAndPoolType" resultMap="ApiGachaRecordResultMap">
+        select
+        <include refid="BaseColumnList"/>
+        from api_gacha_record
+        where account_id = #{accountId}
+          and pool_type = #{poolType}
+        order by draw_time asc, in_second_seq asc, id asc
+    </select>
+</mapper>

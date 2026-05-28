@@ -1,4 +1,4 @@
-// mybatis实体类
+// mybatis实体类，连接旧表Analyzer
 
 package com.phrolova.gacha.pojo.entity;
 

@@ -1,6 +1,7 @@
 package com.phrolova.gacha.server.service.impl;
 
-import com.phrolova.gacha.server.mapper.AnalyzerRecordMapper;
+// import com.phrolova.gacha.server.mapper.AnalyzerRecordMapper;
+import com.phrolova.gacha.server.mapper.ApiGachaRecordMapper;
 import com.phrolova.gacha.server.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,10 +10,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecordServiceImpl implements RecordService {
 
-    private final AnalyzerRecordMapper analyzerRecordMapper;
+    // private final AnalyzerRecordMapper analyzerRecordMapper;
+    private final ApiGachaRecordMapper apiGachaRecordMapper;
 
     @Override
     public Long countRecords() {
-        return analyzerRecordMapper.countAll();
+
+        // return analyzerRecordMapper.countAll();
+        return apiGachaRecordMapper.countAll();
     }
 }
