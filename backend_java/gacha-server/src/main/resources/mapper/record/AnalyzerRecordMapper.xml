@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.phrolova.gacha.server.mapper.AnalyzerRecordMapper">
 
-    <resultMap id="AnalyzerRecordResultMap" type="com.phrolova.gacha.pojo.entity.AnalyzerRecordEntity">
+    <resultMap id="AnalyzerRecordResultMap" type="com.phrolova.gacha.pojo.entity.deprecated.AnalyzerRecordEntity">
         <id column="id" property="id"/>
         <result column="uid" property="uid"/>
         <result column="resource_id" property="resourceId"/>

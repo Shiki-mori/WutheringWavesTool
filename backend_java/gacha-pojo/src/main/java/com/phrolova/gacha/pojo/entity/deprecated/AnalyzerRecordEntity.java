@@ -1,6 +1,6 @@
 // mybatis实体类，连接旧表Analyzer
 
-package com.phrolova.gacha.pojo.entity;
+package com.phrolova.gacha.pojo.entity.deprecated;
 
 import lombok.Data;
 
@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@Deprecated
 public class AnalyzerRecordEntity implements Serializable {
 
     private Long id;
