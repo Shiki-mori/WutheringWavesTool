@@ -4,3 +4,6 @@ developmentLog/intercodex.md
 
 backend_java/gacha-server/src/main/resources/application-dev.yml
 backend_java/gacha-server/src/main/resources/application-new.yml
+
+.cursorj/
+.idea/
