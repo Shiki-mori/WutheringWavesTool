@@ -56,4 +56,42 @@
           and pool_type = #{poolType}
         order by draw_time asc, in_second_seq asc, id asc
     </select>
+
+    <resultMap id="RecordDetailResultMap" type="com.phrolova.gacha.pojo.dto.RecordDetailDTO">
+        <id column="id" property="id"/>
+        <result column="uid" property="uid"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="resource_name" property="resourceName"/>
+        <result column="quality_level" property="qualityLevel"/>
+        <result column="pool_type" property="poolType"/>
+        <result column="draw_time" property="drawTime"/>
+        <result column="in_second_seq" property="inSecondSeq"/>
+        <result column="draw_order" property="drawOrder"/>
+    </resultMap>
+
+    <sql id="RecordDetailSelect">
+        select
+            r.id,
+            a.game_uid as uid,
+            gr.resource_id,
+            gr.resource_name,
+            gr.quality_level,
+            r.pool_type,
+            r.draw_time,
+            r.in_second_seq,
+            r.api_draw_order as draw_order
+        from api_gacha_record r
+        left join game_account a on r.account_id = a.id
+        left join game_resource gr on r.resource_id = gr.id
+    </sql>
+
+    <select id="selectAllDetails" resultMap="RecordDetailResultMap">
+        <include refid="RecordDetailSelect"/>
+        order by r.draw_time asc, r.in_second_seq asc, r.id asc
+    </select>
+
+    <select id="selectDetailById" resultMap="RecordDetailResultMap">
+        <include refid="RecordDetailSelect"/>
+        where r.id = #{id}
+    </select>
 </mapper>

@@ -5,20 +5,18 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 单条官方 API 查询 payload，对应 Node {@code fetchQueryParams} 数组元素。
+ * 从抽卡链接解析出的基础参数，对应 Node {@code parseGachaUrl} 返回值。
  */
 @Data
-public class GachaQueryParams implements Serializable {
-
-    private String playerId;
+public class GachaUrlParams implements Serializable {
 
     private String serverId;
+
+    private String playerId;
 
     private String recordId;
 
     private String cardPoolId;
 
     private String languageCode;
-
-    private Integer cardPoolType;
 }
