@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phrolova.gacha.server.mapper.GameAccountMapper">
+
+    <select id="selectByServerAndGameUid" resultType="com.phrolova.gacha.pojo.entity.GameAccount">
+        select id, user_id as userId, game_uid as gameUid, server_id as serverId,
+               nickname, created_at as createdAt
+        from game_account
+        where server_id = #{serverId}
+          and game_uid = #{gameUid}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into game_account (user_id, game_uid, server_id)
+        values (#{userId}, #{gameUid}, #{serverId})
+    </insert>
+</mapper>

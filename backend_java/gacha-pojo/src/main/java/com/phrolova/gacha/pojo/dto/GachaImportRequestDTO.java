@@ -1,8 +1,11 @@
 package com.phrolova.gacha.pojo.dto;
 
-/**
- * 抽卡链接
- * @param url 抽卡链接
- */
-public class GachaImportRequestDTO {
+import lombok.Data;
+
+import java.io.Serializable;
+
+@Data
+public class GachaImportRequestDTO implements Serializable {
+
+    private String url;
 }

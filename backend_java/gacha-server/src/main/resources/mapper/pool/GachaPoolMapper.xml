@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phrolova.gacha.server.mapper.GachaPoolMapper">
+
+    <select id="selectByPoolType" resultType="com.phrolova.gacha.pojo.entity.GachaPool">
+        select id, pool_code as poolCode, pool_name as poolName, pool_type as poolType
+        from gacha_pool
+        where pool_type = #{poolType}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into gacha_pool (pool_code, pool_name, pool_type)
+        values (#{poolCode}, #{poolName}, #{poolType})
+    </insert>
+</mapper>

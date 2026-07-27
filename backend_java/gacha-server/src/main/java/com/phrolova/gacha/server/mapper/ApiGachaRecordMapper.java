@@ -18,4 +18,8 @@ public interface ApiGachaRecordMapper {
     List<RecordDetailDTO> selectAllDetails();
 
     RecordDetailDTO selectDetailById(@Param("id") Long id);
+
+    Integer selectMaxApiDrawOrder(@Param("accountId") Long accountId, @Param("poolType") String poolType);
+
+    int insertIgnore(ApiGachaRecord record);
 }

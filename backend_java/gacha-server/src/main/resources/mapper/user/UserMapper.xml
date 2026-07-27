@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phrolova.gacha.server.mapper.UserMapper">
+
+    <select id="selectById" resultType="com.phrolova.gacha.pojo.entity.User">
+        select id, username, password_hash as passwordHash, created_at as createdAt
+        from user
+        where id = #{id}
+    </select>
+
+    <insert id="insertIgnore">
+        insert ignore into user (id, username, password_hash)
+        values (#{id}, #{username}, #{passwordHash})
+    </insert>
+</mapper>

@@ -94,4 +94,21 @@
         <include refid="RecordDetailSelect"/>
         where r.id = #{id}
     </select>
+
+    <select id="selectMaxApiDrawOrder" resultType="java.lang.Integer">
+        select coalesce(max(api_draw_order), 0)
+        from api_gacha_record
+        where account_id = #{accountId}
+          and pool_type = #{poolType}
+    </select>
+
+    <insert id="insertIgnore">
+        insert ignore into api_gacha_record (
+            account_id, pool_id, pool_type, resource_id, business_key,
+            import_task_id, draw_time, in_second_seq, api_draw_order, logical_order
+        ) values (
+            #{accountId}, #{poolId}, #{poolType}, #{resourceId}, #{businessKey},
+            #{importTaskId}, #{drawTime}, #{inSecondSeq}, #{apiDrawOrder}, #{logicalOrder}
+        )
+    </insert>
 </mapper>

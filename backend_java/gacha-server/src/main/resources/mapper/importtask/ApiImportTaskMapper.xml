@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phrolova.gacha.server.mapper.ApiImportTaskMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into api_import_task (account_id, status, card_pool_id, imported_count)
+        values (#{accountId}, #{status}, #{cardPoolId}, #{importedCount})
+    </insert>
+
+    <update id="updateImportedCount">
+        update api_import_task
+        set imported_count = #{importedCount},
+            status = 'completed'
+        where id = #{id}
+    </update>
+</mapper>
