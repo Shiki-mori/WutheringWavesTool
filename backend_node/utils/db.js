@@ -31,7 +31,7 @@ async function testConnection() {
         console.log('MySQL connected');
         connection.release();
     } catch (error) {
-        console.error('MySQL connected failed:', error);
+        console.error('MySQL connected failed:', error.code ?? 'UNKNOWN_ERROR');
     }
 }
 

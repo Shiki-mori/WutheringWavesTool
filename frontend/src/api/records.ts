@@ -11,6 +11,8 @@ export interface RecordItem {
     in_second_seq: number | null;
     draw_order: number | null;
     is_up: number | null;
+    data_source?: 'official' | 'manual' | 'placeholder';
+    import_batch_id?: string | null;
 }
 
 export interface RecordsResponse {

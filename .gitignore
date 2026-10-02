@@ -1,4 +1,5 @@
 backend_node/node_modules/
+backend_node/backups/
 developmentLog/intercodex.md
 
 backend_java/gacha-server/src/main/resources

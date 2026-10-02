@@ -21,6 +21,7 @@
 | `backend_node/index.js` | Express 服务入口与路由挂载，监听 3000 端口。 |
 | `backend_node/api/` | HTTP 请求和响应处理。 |
 | `backend_node/service/` | 业务流程编排，例如 `fetchAndSave.js`。 |
+| `backend_node/scripts/`、`backend_node/test/`、`backend_node/database/` | 分别为历史补录命令、脱敏回归测试、补录来源字段迁移；具体操作见 `backend_node/README.md`。 |
 | `backend_node/utils/` | 链接解析、官方请求、预处理、数据库访问、入库和统计计算。 |
 | `backend_node/config/` | 业务配置，例如常驻角色 ID 列表。 |
 | `backend_java/` | Java 17、Spring Boot 4.0.5、Maven Wrapper 实验工程；当前可构建源码位于 `src/`，只有基础启动与 `/hello` 接口。 |
@@ -47,6 +48,10 @@
 # Node.js 单文件语法检查，按实际改动替换路径
 node --check backend_node/index.js
 
+# Node.js 回归测试；历史补录默认只读预演
+(cd backend_node && npm test)
+(cd backend_node && npm run records:import)
+
 # 仅当任务涉及 Java 实验工程时
 (cd backend_java && ./mvnw test)
 (cd backend_java && ./mvnw spring-boot:run)
@@ -55,7 +60,7 @@ node --check backend_node/index.js
 - 前端 API 地址目前写在 `frontend/src/api/request.ts`，为 `http://localhost:3000`；Java 实验服务默认端口为 8080。Vite 的实际访问地址以启动输出为准。
 - Node.js 后端使用 MySQL，连接配置位于 `backend_node/utils/db.js`；现有数据库名为 `analyzer`，核心表为 `analyzer_records`。安装 npm 依赖不会自动创建数据库或表。
 - `run_node.sh` 依赖 GNOME Console 的 `kgx`，其他环境优先使用上述直接启动命令。根目录 `run.sh` 只有 Maven 启动命令，不能视为整个项目的可靠启动入口。
-- 前端目前没有独立测试或 lint 脚本。Node.js 的 `npm test` 是明确返回失败的占位脚本，不是有效测试入口。
+- 前端目前没有独立测试或 lint 脚本。Node.js 的 `npm test` 使用内置测试运行器，覆盖历史补录及相关导入、排序、统计回归。
 - `backend_java/` 下的 Maven 测试只覆盖根 `pom.xml` 对应的源码，不能验证尚未接入 Maven 的实验目录。
 
 ## 实现约定
@@ -79,7 +84,7 @@ node --check backend_node/index.js
 - 当前统计包括出金抽数、平均出金、平均 UP、UP 率、已垫抽数及连续赢/输 50/50。修改算法时核对尾部未出金记录、大保底与小保底的处理；不要把大保底出 UP 自动计为赢一次 50/50。
 - 常驻角色列表、卡池编号和 UP 判断目前是代码中的业务假设。扩展角色或卡池时核对适用范围，尤其是武器池，不将角色池判断直接推广到所有卡池。
 - 当前数据库查询未按用户隔离，分析主要按卡池分组。涉及多用户功能时需要明确用户筛选与统计范围，不能把跨用户结果当成单个用户历史。
-- `developmentLog/7_追加手动导入功能.md` 是设计草案。手动导入、批次、插入位置和 `global_order` 尚未实现，涉及这些功能时先明确数据模型与排序规则。
+- `developmentLog/7_追加手动导入功能.md` 是设计草案。当前历史补录只支持官方记录之前的负数序号前缀、来源与批次标记；任意插入位置和 `global_order` 尚未实现。实际写库使用显式 `--apply`，先备份再迁移、事务插入与核验；默认命令只读预演。
 
 ## 验证与交付
 

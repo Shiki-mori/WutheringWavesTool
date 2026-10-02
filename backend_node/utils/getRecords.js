@@ -5,6 +5,9 @@ async function getRecords() {
     return query(`
         SELECT * FROM analyzer_records
         ORDER BY
+            uid ASC,
+            pool_type ASC,
+            draw_order ASC,
             time ASC,
             in_second_seq ASC
     `)
