@@ -110,6 +110,7 @@ import { getAnalyzedRecordsData, getRecordsData } from './api/records'
 import { getGachaData } from './api/gacha'
 import { getPoolLabel } from './utils/poolLabels'
 import { getSummaryFiveStarCount } from './utils/poolStats'
+import { getLatestRecordDate } from './utils/recordDates'
 
 const inputUrl = ref('')
 const urlresult = ref('')
@@ -173,8 +174,10 @@ const readRecords = async () => {
   try {
     const res = await getRecordsData()
     //recordsResult.value = res.data
-    const count = Array.isArray(res.data?.data) ? res.data.data.length : 0
-    recordsMessage.value = `查询成功，共返回 ${count} 条记录`
+    const records = Array.isArray(res.data?.data) ? res.data.data : []
+    const latestDate = getLatestRecordDate(records) ?? (records.length ? '未知' : '暂无记录')
+    const suggestedDate = getLatestRecordDate(records, 6) ?? (records.length ? '未知' : '暂无记录')
+    recordsMessage.value = `查询成功，共返回 ${records.length} 条记录。最新记录时间：${latestDate}。建议最晚更新时间：${suggestedDate}`
   } catch (error) {
     console.error('读取数据库失败:', error)
     recordsResult.value = null

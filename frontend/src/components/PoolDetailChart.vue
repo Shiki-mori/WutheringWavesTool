@@ -282,13 +282,13 @@ const option = computed(() => {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(180deg, rgba(255, 243, 248, 0.82) 0%, rgba(255, 232, 243, 0.9) 100%),
+    linear-gradient(180deg, rgba(255, 243, 248, 0.35) 0%, rgba(255, 232, 243, 0.45) 100%),
     url('/images/pool-detail-bg.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   background-blend-mode: normal;
-  opacity: 0.7;
+  opacity: 0.8;
   pointer-events: none;
 }
 
