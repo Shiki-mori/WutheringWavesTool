@@ -5,7 +5,6 @@
         <div class="panel-heading">
           <p class="eyebrow">Wuthering Waves Tool</p>
           <h1>抽卡分析</h1>
-          <p class="panel-copy">把原始抽卡记录整理成总览图和单卡池详情，桌面端阅读更清晰。</p>
         </div>
         <div class="panel-badge">Desktop Dashboard</div>
       </div>
@@ -56,14 +55,16 @@
         </div>
         <p v-if="analyzeMessage" class="status-text">{{ analyzeMessage }}</p>
 
-        <div v-if="summaryCards.length" class="summary-grid">
-          <article v-for="card in summaryCards" :key="card.label" class="summary-card">
-            <span class="summary-label">{{ card.label }}</span>
-            <strong class="summary-value">{{ card.value }}</strong>
-          </article>
-        </div>
+        <div v-if="analyzeResult.length" class="summary-overview">
+          <div class="summary-grid">
+            <article v-for="card in summaryCards" :key="card.label" class="summary-card">
+              <span class="summary-label">{{ card.label }}</span>
+              <strong class="summary-value">{{ card.value }}</strong>
+            </article>
+          </div>
 
-        <PoolSummaryChart v-if="analyzeResult.length" :pools="analyzeResult" />
+          <PoolSummaryChart :pools="analyzeResult" />
+        </div>
 
         <section v-if="detailPools.length" class="detail-section">
           <div class="detail-title-row">
@@ -107,6 +108,8 @@ import PoolDetailChart from './components/PoolDetailChart.vue'
 import type { PoolAnalyzeItem } from './api/records'
 import { getAnalyzedRecordsData, getRecordsData } from './api/records'
 import { getGachaData } from './api/gacha'
+import { getPoolLabel } from './utils/poolLabels'
+import { getSummaryFiveStarCount } from './utils/poolStats'
 
 const inputUrl = ref('')
 const urlresult = ref('')
@@ -119,22 +122,17 @@ const analyzeMessage = ref('')
 const analyzeResult = ref<PoolAnalyzeItem[]>([])
 const activePoolType = ref<number | null>(null)
 
-const poolLabelMap: Record<number, string> = {
-  1: '角色活动唤取',
-  2: '武器活动唤取',
-  3: '常驻角色',
-  4: '常驻武器'
-}
-
 const summaryCards = computed(() => {
   if (!analyzeResult.value.length) {
     return []
   }
 
   const totalPulls = analyzeResult.value.reduce((sum, item) => sum + item.data.total, 0)
-  const totalFiveStar = analyzeResult.value.reduce((sum, item) => sum + item.data.fiveStar, 0)
+  const totalFiveStar = getSummaryFiveStarCount(analyzeResult.value)
+  // 平均出金仍以全部五星为分母，与只计 UP 和武器的展示计数区分。
+  const allFiveStar = analyzeResult.value.reduce((sum, item) => sum + item.data.fiveStar, 0)
   const currentPity = analyzeResult.value.reduce((sum, item) => sum + item.data.已垫, 0)
-  const avgPity = totalFiveStar ? (totalPulls / totalFiveStar).toFixed(2) : '0.00'
+  const avgPity = allFiveStar ? (totalPulls / allFiveStar).toFixed(2) : '0.00'
 
   return [
     { label: '卡池数量', value: String(analyzeResult.value.length) },
@@ -157,8 +155,6 @@ const activePool = computed(() => {
     detailPools.value[0]
   )
 })
-
-const getPoolLabel = (poolType: number) => poolLabelMap[poolType] ?? `卡池 ${poolType}`
 
 const gachaAnalyze = async () => {
   try {
@@ -280,11 +276,8 @@ h1 {
 .action-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: 20px;
-}
-
-.action-section + .action-section {
-  margin-top: 28px;
 }
 
 .action-card,
@@ -405,15 +398,21 @@ h2 {
   background: rgba(255, 252, 245, 0.92);
 }
 
+.summary-overview {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 18px;
-  margin-bottom: 26px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 .summary-card {
-  padding: 20px 22px;
+  padding: 14px 20px;
   border: 1px solid rgba(239, 228, 207, 0.92);
   border-radius: 20px;
   background:
@@ -424,7 +423,7 @@ h2 {
 
 .summary-label {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   color: #8d7b63;
   font-size: 14px;
 }
@@ -509,6 +508,10 @@ h2 {
 @media (max-width: 980px) {
   .action-grid {
     grid-template-columns: 1fr;
+  }
+
+  .summary-overview {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .panel-header {

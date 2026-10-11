@@ -8,8 +8,9 @@
         </div>
         <div class="detail-metrics">
           <span>总抽数 {{ pool.data.total }}</span>
-          <span>五星 {{ pool.data.fiveStar }}</span>
+          <span>五星 {{ getPoolFiveStarCount(pool) }}</span>
           <span>平均出金 {{ pool.data.avgPity }}</span>
+          <span v-if="isPoolOne">平均 UP 抽数 {{ pool.data.avgUp }}</span>
           <span>UP率 {{ pool.data.upRate }}</span>
         </div>
       </header>
@@ -27,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, h } from 'vue'
+import { computed } from 'vue'
 import { use } from 'echarts/core'
 import { SVGRenderer } from 'echarts/renderers'
 import { BarChart, PieChart } from 'echarts/charts'
@@ -39,6 +40,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import type { PoolAnalyzeItem } from '../api/records'
+import { getPoolFiveStarCount } from '../utils/poolStats'
 
 use([
   SVGRenderer,

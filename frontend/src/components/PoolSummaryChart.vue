@@ -17,6 +17,8 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import type { PoolAnalyzeItem } from '../api/records'
+import { getPoolLabel } from '../utils/poolLabels'
+import { getPoolFiveStarCount } from '../utils/poolStats'
 
 use([SVGRenderer, BarChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent])
 
@@ -48,8 +50,9 @@ const option = computed(() => ({
     bottom: 0
   },
   grid: {
-    left: 48,
-    right: 24,
+    left: 64,
+    right: 64,
+    containLabel: true,
     top: 64,
     bottom: 64
   },
@@ -63,34 +66,49 @@ const option = computed(() => ({
       fontWeight: 600,
       color: '#231a11'
     },
-    data: props.pools.map((item) => `卡池 ${item.poolType}`)
+    data: props.pools.map((item) => getPoolLabel(item.poolType))
   },
-  yAxis: {
-    type: 'value',
-    axisLabel: {
-      fontSize: 12,
-      fontWeight: 600,
-      color: '#231a11'
+  yAxis: [
+    {
+      type: 'value',
+      name: '总抽数',
+      position: 'left',
+      min: 0,
+      minInterval: 1,
+      axisLabel: {
+        fontSize: 12,
+        fontWeight: 600,
+        color: '#231a11'
+      }
+    },
+    {
+      type: 'value',
+      name: '五星数',
+      position: 'right',
+      min: 0,
+      minInterval: 1,
+      splitLine: { show: false },
+      axisLabel: {
+        fontSize: 12,
+        fontWeight: 600,
+        color: '#231a11'
+      }
     }
-  },
+  ],
   series: [
     {
       name: '总抽数',
       type: 'bar',
+      yAxisIndex: 0,
       barMaxWidth: 42,
       data: props.pools.map((item) => item.data.total)
     },
     {
       name: '五星数',
       type: 'bar',
+      yAxisIndex: 1,
       barMaxWidth: 42,
-      data: props.pools.map((item) => item.data.fiveStar)
-    },
-    {
-      name: '已垫',
-      type: 'bar',
-      barMaxWidth: 42,
-      data: props.pools.map((item) => item.data.已垫)
+      data: props.pools.map((item) => getPoolFiveStarCount(item))
     }
   ]
 }))
@@ -98,7 +116,8 @@ const option = computed(() => ({
 
 <style scoped>
 .chart-panel {
-  margin-top: 10px;
+  display: flex;
+  min-width: 0;
   padding: 18px 18px 10px;
   min-height: 420px;
   border: 1px solid rgba(223, 207, 178, 0.75);
@@ -108,7 +127,9 @@ const option = computed(() => ({
 }
 
 .chart {
+  flex: 1;
   width: 100%;
+  height: auto;
   min-height: 420px;
 }
 </style>
