@@ -215,13 +215,13 @@ const analyzeRecords = async () => {
 .panel {
   position: relative;
   padding: 40px;
-  border: 1px solid rgba(184, 150, 93, 0.18);
+  border: 1px solid rgba(202, 132, 161, 0.18);
   border-radius: 32px;
   background:
-    radial-gradient(circle at top right, rgba(233, 194, 125, 0.18), transparent 26%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 249, 241, 0.98) 100%);
+    radial-gradient(circle at top right, rgba(244, 174, 204, 0.18), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 246, 250, 0.98) 100%);
   box-shadow:
-    0 24px 60px rgba(69, 47, 17, 0.08),
+    0 24px 60px rgba(100, 47, 71, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
@@ -239,7 +239,7 @@ const analyzeRecords = async () => {
 
 .eyebrow {
   margin: 0 0 8px;
-  color: #8f6b32;
+  color: #94516e;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -248,7 +248,7 @@ const analyzeRecords = async () => {
 
 h1 {
   margin: 0;
-  color: #21170d;
+  color: #3d2934;
   font-size: 48px;
   line-height: 1;
 }
@@ -256,17 +256,17 @@ h1 {
 .panel-copy {
   margin: 14px 0 0;
   max-width: 620px;
-  color: #6f6457;
+  color: #79616d;
   font-size: 16px;
 }
 
 .panel-badge {
   flex: 0 0 auto;
   padding: 10px 14px;
-  border: 1px solid rgba(183, 122, 31, 0.18);
+  border: 1px solid rgba(184, 84, 124, 0.18);
   border-radius: 999px;
-  background: rgba(255, 248, 236, 0.9);
-  color: #8a6329;
+  background: rgba(255, 238, 246, 0.9);
+  color: #94516e;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -283,11 +283,11 @@ h1 {
 .action-card,
 .analysis-card {
   padding: 24px;
-  border: 1px solid rgba(223, 207, 178, 0.75);
+  border: 1px solid rgba(235, 199, 216, 0.75);
   border-radius: 24px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 249, 239, 0.92) 100%);
-  box-shadow: 0 16px 30px rgba(52, 35, 12, 0.05);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 243, 248, 0.92) 100%);
+  box-shadow: 0 16px 30px rgba(100, 47, 71, 0.05);
 }
 
 .analysis-card {
@@ -305,7 +305,7 @@ h1 {
 
 .section-kicker {
   margin: 0 0 6px;
-  color: #9b6a24;
+  color: #995571;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -314,7 +314,7 @@ h1 {
 
 h2 {
   margin: 0;
-  color: #2a2118;
+  color: #49343f;
   font-size: 24px;
 }
 
@@ -330,18 +330,18 @@ h2 {
   flex: 1 1 320px;
   min-width: 280px;
   padding: 14px 16px;
-  border: 1px solid #ddcfb9;
+  border: 1px solid #e6c4d4;
   border-radius: 14px;
   font: inherit;
-  color: #2a2118;
+  color: #49343f;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: inset 0 1px 2px rgba(35, 23, 8, 0.04);
+  box-shadow: inset 0 1px 2px rgba(73, 38, 55, 0.04);
 }
 
 .text-input:focus {
   outline: none;
-  border-color: #c2892f;
-  box-shadow: 0 0 0 4px rgba(194, 137, 47, 0.14);
+  border-color: #b8547c;
+  box-shadow: 0 0 0 4px rgba(184, 84, 124, 0.14);
 }
 
 .primary-button,
@@ -358,16 +358,16 @@ h2 {
 }
 
 .primary-button {
-  border: 1px solid #b7771b;
-  background: linear-gradient(180deg, #d89531 0%, #b7771b 100%);
-  box-shadow: 0 12px 24px rgba(183, 119, 27, 0.22);
+  border: 1px solid #a9436c;
+  background: linear-gradient(180deg, #c9678e 0%, #a9436c 100%);
+  box-shadow: 0 12px 24px rgba(184, 84, 124, 0.22);
   color: #fff;
 }
 
 .secondary-button {
-  border: 1px solid #dcccae;
-  background: linear-gradient(180deg, #fffdfa 0%, #f7f1e6 100%);
-  color: #5f513e;
+  border: 1px solid #e6c4d4;
+  background: linear-gradient(180deg, #fffbfd 0%, #fcecf3 100%);
+  color: #795366;
 }
 
 .primary-button:hover,
@@ -386,16 +386,16 @@ h2 {
 
 .status-text {
   margin: 0 0 18px;
-  color: #5a6270;
+  color: #79616d;
 }
 
 .status-pre {
   white-space: pre-wrap;
   word-break: break-word;
   padding: 14px 16px;
-  border: 1px solid rgba(211, 196, 171, 0.8);
+  border: 1px solid rgba(230, 196, 212, 0.8);
   border-radius: 16px;
-  background: rgba(255, 252, 245, 0.92);
+  background: rgba(255, 246, 250, 0.92);
 }
 
 .summary-overview {
@@ -413,10 +413,10 @@ h2 {
 
 .summary-card {
   padding: 14px 20px;
-  border: 1px solid rgba(239, 228, 207, 0.92);
+  border: 1px solid rgba(241, 211, 225, 0.92);
   border-radius: 20px;
   background:
-    linear-gradient(180deg, rgba(255, 252, 246, 0.98) 0%, rgba(255, 245, 230, 0.94) 100%);
+    linear-gradient(180deg, rgba(255, 248, 251, 0.98) 0%, rgba(255, 235, 245, 0.94) 100%);
   text-align: left;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
@@ -424,12 +424,12 @@ h2 {
 .summary-label {
   display: block;
   margin-bottom: 6px;
-  color: #8d7b63;
+  color: #855f72;
   font-size: 14px;
 }
 
 .summary-value {
-  color: #241c15;
+  color: #49343f;
   font-size: 30px;
   line-height: 1;
 }
@@ -441,25 +441,25 @@ h2 {
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 18px;
   background:
-    linear-gradient(180deg, rgba(32, 27, 23, 0.96) 0%, rgba(42, 35, 30, 0.98) 100%);
+    linear-gradient(180deg, rgba(55, 35, 47, 0.96) 0%, rgba(68, 44, 58, 0.98) 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  color: #f8f0e5;
+  color: #fcebf2;
   text-align: left;
 }
 
 .empty-state {
   margin: 0;
   padding: 56px 24px;
-  border: 1px dashed #d9cdbb;
+  border: 1px dashed #e3bfd0;
   border-radius: 24px;
-  color: #7b6f63;
-  background: linear-gradient(180deg, rgba(255, 251, 244, 0.92) 0%, rgba(255, 246, 232, 0.92) 100%);
+  color: #79616d;
+  background: linear-gradient(180deg, rgba(255, 247, 251, 0.92) 0%, rgba(255, 237, 246, 0.92) 100%);
 }
 
 .detail-section {
   margin-top: 32px;
   padding-top: 28px;
-  border-top: 1px solid rgba(223, 207, 178, 0.75);
+  border-top: 1px solid rgba(235, 199, 216, 0.75);
 }
 
 .detail-title-row {
@@ -468,7 +468,7 @@ h2 {
 
 .detail-kicker {
   margin: 0 0 6px;
-  color: #9b6a24;
+  color: #995571;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -477,7 +477,7 @@ h2 {
 
 .detail-title {
   margin: 0;
-  color: #2a2118;
+  color: #49343f;
   font-size: 30px;
 }
 
@@ -491,17 +491,17 @@ h2 {
 .tab-button {
   min-height: 46px;
   padding: 0 18px;
-  border: 1px solid #dfcfb2;
+  border: 1px solid #e6c4d4;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.8);
-  color: #6b6257;
+  color: #79616d;
   font-weight: 700;
 }
 
 .tab-button.active {
-  border-color: #b77a1f;
-  background: linear-gradient(180deg, #d89531 0%, #b7771b 100%);
-  box-shadow: 0 10px 20px rgba(183, 119, 27, 0.22);
+  border-color: #a9436c;
+  background: linear-gradient(180deg, #c9678e 0%, #a9436c 100%);
+  box-shadow: 0 10px 20px rgba(184, 84, 124, 0.22);
   color: #fff;
 }
 

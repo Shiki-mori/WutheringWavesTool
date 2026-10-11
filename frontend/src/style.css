@@ -2,9 +2,9 @@
   font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #213547;
+  color: #49343f;
   background:
-    radial-gradient(circle at top, #f8f1e5 0%, #f2eadf 26%, #ece2d3 54%, #e6d9c8 100%);
+    radial-gradient(circle at top, #fff5f8 0%, #fcebf2 26%, #f8e0eb 54%, #f2d4e2 100%);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -41,7 +41,7 @@ button {
 
 button:focus,
 button:focus-visible {
-  outline: 3px solid rgba(194, 137, 47, 0.16);
+  outline: 3px solid rgba(184, 84, 124, 0.16);
   outline-offset: 2px;
 }
 

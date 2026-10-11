@@ -86,14 +86,14 @@ const ringOption = computed(() => {
       fontFamily: '"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
       fontSize: 13,
       fontWeight: 500,
-      color: '#231a11'
+      color: '#49343f'
     },
     title: {
       text: '五星 UP / 歪',
       textStyle: {
         fontSize: 18,
         fontWeight: 700,
-        color: '#231a11'
+        color: '#49343f'
       }
     },
     tooltip: {
@@ -120,7 +120,7 @@ const ringOption = computed(() => {
           formatter: '{b}',
           fontSize: 12,
           fontWeight: 600,
-          color: '#231a11'
+          color: '#49343f'
         },
         labelLine: {
           show: list.length <= 16
@@ -176,14 +176,14 @@ const option = computed(() => {
       fontFamily: '"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
       fontSize: 13,
       fontWeight: 500,
-      color: '#231a11'
+      color: '#49343f'
     },
     title: {
       text: '出金抽数分布',
       textStyle: {
         fontSize: 18,
         fontWeight: 700,
-        color: '#231a11'
+        color: '#49343f'
       }
     },
     tooltip: {
@@ -213,12 +213,12 @@ const option = computed(() => {
       nameTextStyle: {
         fontSize: 13,
         fontWeight: 600,
-        color: '#231a11'
+        color: '#49343f'
       },
       axisLabel: {
         fontSize: 12,
         fontWeight: 600,
-        color: '#231a11'
+        color: '#49343f'
       }
     },
     yAxis: {
@@ -228,7 +228,7 @@ const option = computed(() => {
         interval: 0,
         fontSize: 12,
         fontWeight: 600,
-        color: '#231a11'
+        color: '#49343f'
       },
       data: items.map((item) => item.name)
     },
@@ -242,7 +242,7 @@ const option = computed(() => {
           position: 'right',
           fontSize: 12,
           fontWeight: 700,
-          color: '#231a11',
+          color: '#49343f',
           formatter: ({
             data
           }: {
@@ -270,10 +270,10 @@ const option = computed(() => {
   padding: 24px;
   border-radius: 26px;
   background:
-    radial-gradient(circle at top right, rgba(224, 161, 6, 0.12), transparent 24%),
-    linear-gradient(180deg, #fffdfa 0%, #fff7ea 100%);
-  border: 1px solid #efe1c7;
-  box-shadow: 0 18px 30px rgba(52, 35, 12, 0.06);
+    radial-gradient(circle at top right, rgba(244, 174, 204, 0.12), transparent 24%),
+    linear-gradient(180deg, #fffbfd 0%, #fff0f6 100%);
+  border: 1px solid #f1d3e1;
+  box-shadow: 0 18px 30px rgba(100, 47, 71, 0.06);
 }
 
 /* 背景图处理逻辑 */
@@ -282,17 +282,13 @@ const option = computed(() => {
   position: absolute;
   inset: 0;
   background-image:
-    /* linear-gradient(180deg, rgba(255, 252, 246, 0.4) 0%, rgba(255, 247, 234, 0.3) 100%), */
-    linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%),
+    linear-gradient(180deg, rgba(255, 243, 248, 0.82) 0%, rgba(255, 232, 243, 0.9) 100%),
     url('/images/pool-detail-bg.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  /* background-blend-mode: screen; */
   background-blend-mode: normal;
-  filter: saturate(1.2) brightness(1.15) contrast(1.00);
-  /* 不透明度 */
-  opacity: 0.70;
+  opacity: 0.7;
   pointer-events: none;
 }
 
@@ -311,7 +307,7 @@ const option = computed(() => {
 
 .detail-eyebrow {
   margin: 0 0 6px;
-  color: #9b6a24;
+  color: #995571;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -320,7 +316,7 @@ const option = computed(() => {
 
 h3 {
   margin: 0;
-  color: #2a2118;
+  color: #49343f;
   font-size: 24px;
 }
 
@@ -329,13 +325,13 @@ h3 {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 12px;
-  color: #6b6257;
+  color: #79616d;
   font-size: 14px;
 }
 
 .detail-metrics span {
   padding: 10px 12px;
-  border: 1px solid rgba(223, 207, 178, 0.8);
+  border: 1px solid rgba(235, 199, 216, 0.8);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);
 }

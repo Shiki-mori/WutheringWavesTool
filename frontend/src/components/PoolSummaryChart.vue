@@ -29,18 +29,19 @@ const props = defineProps<{
 const chartInitOptions = { renderer: 'svg' as const }
 
 const option = computed(() => ({
+  color: ['#d7799f', '#a58bbd'],
   textStyle: {
     fontFamily: '"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
     fontSize: 13,
     fontWeight: 500,
-    color: '#231a11'
+    color: '#49343f'
   },
   title: {
     text: '卡池抽卡总览',
     textStyle: {
       fontSize: 18,
       fontWeight: 700,
-      color: '#231a11'
+      color: '#49343f'
     }
   },
   tooltip: {
@@ -64,7 +65,7 @@ const option = computed(() => ({
     axisLabel: {
       fontSize: 12,
       fontWeight: 600,
-      color: '#231a11'
+      color: '#49343f'
     },
     data: props.pools.map((item) => getPoolLabel(item.poolType))
   },
@@ -78,7 +79,7 @@ const option = computed(() => ({
       axisLabel: {
         fontSize: 12,
         fontWeight: 600,
-        color: '#231a11'
+        color: '#49343f'
       }
     },
     {
@@ -91,7 +92,7 @@ const option = computed(() => ({
       axisLabel: {
         fontSize: 12,
         fontWeight: 600,
-        color: '#231a11'
+        color: '#49343f'
       }
     }
   ],
@@ -120,10 +121,10 @@ const option = computed(() => ({
   min-width: 0;
   padding: 18px 18px 10px;
   min-height: 420px;
-  border: 1px solid rgba(223, 207, 178, 0.75);
+  border: 1px solid rgba(235, 199, 216, 0.75);
   border-radius: 24px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 250, 242, 0.92) 100%);
-  box-shadow: 0 18px 30px rgba(52, 35, 12, 0.05);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 244, 249, 0.92) 100%);
+  box-shadow: 0 18px 30px rgba(100, 47, 71, 0.05);
 }
 
 .chart {
