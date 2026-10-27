@@ -1,10 +1,46 @@
 :root {
-  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  line-height: 1.5;
+  --pink-50: #fff6f9;
+  --pink-100: #ffe8f0;
+  --pink-200: #fdd0e0;
+  --pink-300: #f8aac6;
+  --pink-400: #ef83a9;
+  --pink-500: #e2628f;
+  --pink-600: #c94a77;
+  --pink-700: #a3375e;
+  --lilac-300: #cdb8ea;
+  --lilac-500: #a68bd4;
+
+  --ink-900: #3b2532;
+  --ink-700: #5e4452;
+  --ink-500: #8b6f7d;
+  --ink-300: #b9a2ad;
+
+  --surface: rgba(255, 255, 255, 0.74);
+  --surface-strong: rgba(255, 255, 255, 0.92);
+  --border: rgba(232, 150, 182, 0.28);
+  --border-strong: rgba(226, 98, 143, 0.42);
+
+  --success: #3fa77a;
+  --success-bg: rgba(91, 196, 148, 0.12);
+  --danger: #d6456b;
+  --danger-bg: rgba(226, 80, 118, 0.1);
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --shadow-sm: 0 4px 14px rgba(163, 55, 94, 0.06);
+  --shadow-md: 0 18px 40px rgba(163, 55, 94, 0.1);
+  --shadow-pink: 0 12px 26px rgba(226, 98, 143, 0.32);
+
+  --font-sans: 'HarmonyOS Sans SC', 'MiSans', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei',
+    'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  font-family: var(--font-sans);
+  line-height: 1.55;
   font-weight: 400;
-  color: #49343f;
-  background:
-    radial-gradient(circle at top, #fff5f8 0%, #fcebf2 26%, #f8e0eb 54%, #f2d4e2 100%);
+  color: var(--ink-900);
+  background-color: var(--pink-50);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -12,40 +48,63 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
+  position: relative;
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: transparent;
+  background:
+    radial-gradient(1200px 620px at 8% -8%, rgba(253, 208, 224, 0.95), transparent 62%),
+    radial-gradient(900px 560px at 100% 0%, rgba(214, 196, 245, 0.55), transparent 60%),
+    radial-gradient(1000px 700px at 50% 110%, rgba(248, 170, 198, 0.4), transparent 60%),
+    linear-gradient(180deg, #fff8fb 0%, #fdeef4 100%);
+  background-attachment: fixed;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* 细点阵纹理，只做氛围，不参与布局 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(rgba(201, 74, 119, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 75%);
+  pointer-events: none;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
 }
 
 button {
-  border-radius: 12px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: transparent;
+  font: inherit;
   cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
-button:focus,
-button:focus-visible {
-  outline: 3px solid rgba(184, 84, 124, 0.16);
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(226, 98, 143, 0.28);
   outline-offset: 2px;
 }
 
+::selection {
+  background: var(--pink-200);
+  color: var(--ink-900);
+}
+
 #app {
+  position: relative;
+  z-index: 1;
   width: 100%;
   min-height: 100vh;
 }
