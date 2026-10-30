@@ -1,11 +1,22 @@
 //只提供数据连接，不要让db.js和表名产生任何关系
 const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
+
+// Windows 目标机凭据保存在用户私有目录，避免将本机密码写入仓库。
+const localConfigPath = process.env.LOCALAPPDATA
+    ? path.join(process.env.LOCALAPPDATA, 'WutheringWavesTool', 'db.local.json')
+    : null;
+const localConfig = localConfigPath && fs.existsSync(localConfigPath)
+    ? JSON.parse(fs.readFileSync(localConfigPath, 'utf8'))
+    : {};
 
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'analyzer_user',
     password: 'vhuf@nreiLd67gIO',
     database: 'analyzer',
+    ...localConfig,
 
     waitForConnections: true,
     connectionLimit: 10,
