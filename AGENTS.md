@@ -58,6 +58,9 @@ node --check backend_node/index.js
 - 本台 Windows 使用根目录 `run_windows.cmd` / `stop_windows.cmd`（内部调用 `scripts/windows-runtime.ps1`），根据 UAC 提示授予管理员权限，分别启动或停止 MariaDB 服务及 Node 前后端。服务名 `MariaDB`、配置路径 `D:\DevTools\MariaDB\data\my.ini`；不改变服务的手动启动设置。前端固定为 `http://127.0.0.1:5173/`。
 - Windows 运行状态和日志位于忽略的 `.runtime-windows/`；停止时核对 PID、启动时间与入口路径，不按端口或名称批量结束 Node。已有非脚本管理的端口占用会报错，需先结束原来的项目启动方式。双击启动脚本后无需保留终端窗口；结束请运行停止脚本。可在 PowerShell 中直接运行 `./run_windows.cmd` 或 `./stop_windows.cmd`。
 - 如果自动提权没有显示 UAC，右键脚本选择“以管理员身份运行”，或在手动打开的管理员 PowerShell 中执行；无需修改执行策略或服务权限。
+- 根目录 `get_gacha_url.cmd` 用于获取游戏抽卡记录链接，双击或在 PowerShell 中执行 `./get_gacha_url.cmd` 即可；它联网执行固定版本的 WuWa Tracker `import.ps1`，结束后保留窗口供查看结果。
+  - 命令来源：[WuWa Tracker 导入唤取历史页面](https://wuwatracker.com/zh-CN/import)。
+  - 脚本源码：[wuwatracker/wuwatracker 的 import.ps1](https://github.com/wuwatracker/wuwatracker/blob/747a48b1b994baa9c372a4fb933ea7588428bd4b/import.ps1)，固定提交为 `747a48b1b994baa9c372a4fb933ea7588428bd4b`。
 - Windows 启动脚本优先读取 `.runtime-windows/db.local.json`，否则读取 `%LOCALAPPDATA%\WutheringWavesTool\db.local.json`，通过 `WWT_DB_CONFIG` 显式传给 Node；配置缺失立即报错，不退回源码中的旧凭据。本机运行目录及配置应限制为当前用户和 SYSTEM 访问，不提交凭据。
 - 前端目前没有独立测试或 lint 脚本。Node.js 的 `npm test` 是明确返回失败的占位脚本，不是有效测试入口。
 - `backend_java/` 下的 Maven 测试只覆盖根 `pom.xml` 对应的源码，不能验证尚未接入 Maven 的实验目录。
