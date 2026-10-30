@@ -5,3 +5,5 @@ backend_java/gacha-server/src/main/resources
 
 .cursorj/
 .idea/
+
+.runtime-windows/

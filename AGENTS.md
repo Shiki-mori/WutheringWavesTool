@@ -55,6 +55,10 @@ node --check backend_node/index.js
 - 前端 API 地址目前写在 `frontend/src/api/request.ts`，为 `http://localhost:3000`；Java 实验服务默认端口为 8080。Vite 的实际访问地址以启动输出为准。
 - Node.js 后端使用 MySQL，连接配置位于 `backend_node/utils/db.js`；现有数据库名为 `analyzer`，核心表为 `analyzer_records`。安装 npm 依赖不会自动创建数据库或表。
 - `run_node.sh` 依赖 GNOME Console 的 `kgx`，其他环境优先使用上述直接启动命令。根目录 `run.sh` 只有 Maven 启动命令，不能视为整个项目的可靠启动入口。
+- 本台 Windows 使用根目录 `run_windows.cmd` / `stop_windows.cmd`（内部调用 `scripts/windows-runtime.ps1`），根据 UAC 提示授予管理员权限，分别启动或停止 MariaDB 服务及 Node 前后端。服务名 `MariaDB`、配置路径 `D:\DevTools\MariaDB\data\my.ini`；不改变服务的手动启动设置。前端固定为 `http://127.0.0.1:5173/`。
+- Windows 运行状态和日志位于忽略的 `.runtime-windows/`；停止时核对 PID、启动时间与入口路径，不按端口或名称批量结束 Node。已有非脚本管理的端口占用会报错，需先结束原来的项目启动方式。双击启动脚本后无需保留终端窗口；结束请运行停止脚本。可在 PowerShell 中直接运行 `./run_windows.cmd` 或 `./stop_windows.cmd`。
+- 如果自动提权没有显示 UAC，右键脚本选择“以管理员身份运行”，或在手动打开的管理员 PowerShell 中执行；无需修改执行策略或服务权限。
+- Windows 启动脚本优先读取 `.runtime-windows/db.local.json`，否则读取 `%LOCALAPPDATA%\WutheringWavesTool\db.local.json`，通过 `WWT_DB_CONFIG` 显式传给 Node；配置缺失立即报错，不退回源码中的旧凭据。本机运行目录及配置应限制为当前用户和 SYSTEM 访问，不提交凭据。
 - 前端目前没有独立测试或 lint 脚本。Node.js 的 `npm test` 是明确返回失败的占位脚本，不是有效测试入口。
 - `backend_java/` 下的 Maven 测试只覆盖根 `pom.xml` 对应的源码，不能验证尚未接入 Maven 的实验目录。
 

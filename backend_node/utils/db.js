@@ -4,9 +4,12 @@ const fs = require('fs');
 const path = require('path');
 
 // Windows 目标机凭据保存在用户私有目录，避免将本机密码写入仓库。
-const localConfigPath = process.env.LOCALAPPDATA
+const localConfigPath = process.env.WWT_DB_CONFIG || (process.env.LOCALAPPDATA
     ? path.join(process.env.LOCALAPPDATA, 'WutheringWavesTool', 'db.local.json')
-    : null;
+    : null);
+if (process.env.WWT_DB_CONFIG && !fs.existsSync(localConfigPath)) {
+    throw new Error(`指定的本机数据库配置不存在：${localConfigPath}`);
+}
 const localConfig = localConfigPath && fs.existsSync(localConfigPath)
     ? JSON.parse(fs.readFileSync(localConfigPath, 'utf8'))
     : {};
