@@ -5,8 +5,8 @@
 ## 项目定位与开发方向
 
 - 这是鸣潮抽卡记录工具，主要流程是：解析官方记录链接 → 获取记录 → 预处理并保存数据库 → 查询和分析 → 前端展示统计与图表。
-- **当前以 Node.js 后端为主，Java 后端仅作实验。** 默认将业务功能和修复落在 `backend_node/`；只有任务明确涉及 Java 时才修改 `backend_java/`。不要自行迁移接口、切换前端后端地址或移除 Node.js 实现。
-- `developmentLog/6_Java重构.md` 中的迁移目标属于历史计划，不覆盖上述当前方向。若任务需要改变后端方向，先询问用户。
+- **后端只有 Node.js 实现（`backend_node/`）。** 曾经的 Java 实验工程已从仓库移除，不要重新引入或自行迁移后端、切换前端后端地址。
+- `developmentLog/6_Java重构.md`、`Java知识.md` 只作为历史过程记录保留，其中的迁移计划已放弃，不代表当前方向。若任务需要改变后端方向，先询问用户。
 - 默认使用中文沟通、说明和必要的注释；代码标识符沿用所在模块的命名方式。
 
 ## 目录与职责
@@ -23,8 +23,6 @@
 | `backend_node/service/` | 业务流程编排，例如 `fetchAndSave.js`。 |
 | `backend_node/utils/` | 链接解析、官方请求、预处理、数据库访问、入库和统计计算。 |
 | `backend_node/config/` | 业务配置，例如常驻角色 ID 列表。 |
-| `backend_java/` | Java 17、Spring Boot 4.0.5、Maven Wrapper 实验工程；当前可构建源码位于 `src/`，只有基础启动与 `/hello` 接口。 |
-| `backend_java/gacha-common/`、`gacha-pojo/`、`gacha-server/` | 实验目录，尚未在根 `pom.xml` 中配置为 Maven 模块；现有测试不代表完整实现。 |
 | `developmentLog/` | 开发过程、问题记录和设计思路；包含历史版本及未实现方案，使用前与现有代码核对。 |
 
 ## 安装、运行与验证
@@ -46,13 +44,10 @@
 # Node.js 单文件语法检查，按实际改动替换路径
 node --check backend_node/index.js
 
-# 仅当任务涉及 Java 实验工程时
-(cd backend_java && ./mvnw test)
-(cd backend_java && ./mvnw spring-boot:run)
 ```
 
-- 前端 API 地址目前写在 `frontend/src/api/request.ts`，为 `http://localhost:3000`；Java 实验服务默认端口为 8080。Vite 的实际访问地址以启动输出为准。
-- Node.js 后端使用 MySQL，连接配置位于 `backend_node/utils/db.js`；现有数据库名为 `analyzer`，核心表为 `analyzer_records`。安装 npm 依赖不会自动创建数据库或表。
+- 前端 API 地址目前写在 `frontend/src/api/request.ts`，为 `http://localhost:3000`。Vite 的实际访问地址以启动输出为准。
+- Node.js 后端使用 MySQL，连接逻辑位于 `backend_node/utils/db.js`，凭据只从 `WWT_DB_CONFIG` 或用户目录的 `db.local.json`（Windows 为 `%LOCALAPPDATA%`，其他系统为 `~/.config`）读取，缺失即报错，源码中不保存默认凭据；现有数据库名为 `analyzer`，核心表为 `analyzer_records`。安装 npm 依赖不会自动创建数据库或表。
 - `run_node.sh` 依赖 GNOME Console 的 `kgx`，其他环境优先使用上述直接启动命令。
 - 本台 Windows 使用根目录 `run_windows.cmd` / `stop_windows.cmd`（内部调用 `scripts/windows-runtime.ps1`），根据 UAC 提示授予管理员权限，分别启动或停止 MariaDB 服务及 Node 前后端。服务名 `MariaDB`、配置路径 `D:\DevTools\MariaDB\data\my.ini`；不改变服务的手动启动设置。前端固定为 `http://127.0.0.1:5173/`。
 - Windows 运行状态和日志位于忽略的 `.runtime-windows/`；停止时核对 PID、启动时间与入口路径，不按端口或名称批量结束 Node。已有非脚本管理的端口占用会报错，需先结束原来的项目启动方式。双击启动脚本后无需保留终端窗口；结束请运行停止脚本。可在 PowerShell 中直接运行 `./run_windows.cmd` 或 `./stop_windows.cmd`。
@@ -60,9 +55,8 @@ node --check backend_node/index.js
 - 根目录 `get_gacha_url.cmd` 用于获取游戏抽卡记录链接，双击或在 PowerShell 中执行 `./get_gacha_url.cmd` 即可；它联网执行固定版本的 WuWa Tracker `import.ps1`，结束后保留窗口供查看结果。
   - 命令来源：[WuWa Tracker 导入唤取历史页面](https://wuwatracker.com/zh-CN/import)。
   - 脚本源码：[wuwatracker/wuwatracker 的 import.ps1](https://github.com/wuwatracker/wuwatracker/blob/747a48b1b994baa9c372a4fb933ea7588428bd4b/import.ps1)，固定提交为 `747a48b1b994baa9c372a4fb933ea7588428bd4b`。
-- Windows 启动脚本优先读取 `.runtime-windows/db.local.json`，否则读取 `%LOCALAPPDATA%\WutheringWavesTool\db.local.json`，通过 `WWT_DB_CONFIG` 显式传给 Node；配置缺失立即报错，不退回源码中的旧凭据。本机运行目录及配置应限制为当前用户和 SYSTEM 访问，不提交凭据。
-- 前端目前没有独立测试或 lint 脚本。Node.js 的 `npm test` 是明确返回失败的占位脚本，不是有效测试入口。
-- `backend_java/` 下的 Maven 测试只覆盖根 `pom.xml` 对应的源码，不能验证尚未接入 Maven 的实验目录。
+- Windows 启动脚本优先读取 `.runtime-windows/db.local.json`，否则读取 `%LOCALAPPDATA%\WutheringWavesTool\db.local.json`，通过 `WWT_DB_CONFIG` 显式传给 Node；配置缺失立即报错。本机运行目录及配置应限制为当前用户和 SYSTEM 访问，不提交凭据。
+- 前端目前没有测试或 lint 脚本。Node.js 的 `npm test` 是明确返回失败的占位脚本，不是有效测试入口。
 
 ## 实现约定
 
@@ -89,7 +83,7 @@ node --check backend_node/index.js
 
 ## 验证与交付
 
-- 根据改动范围验证：前端修改运行构建；Node.js 修改运行相关文件语法检查，并用脱敏样例验证受影响的纯函数；Java 修改运行对应 Maven 测试。
+- 根据改动范围验证：前端修改运行构建；Node.js 修改运行相关文件语法检查，并用脱敏样例验证受影响的纯函数。
 - 导入、去重和统计算法改动应补充能发现业务错误的回归用例，至少考虑空记录、同秒多抽、重复导入、增量导入以及相关保底序列。不要仅测试实现细节，也不要仅为轻微样式或文档修改新增测试体系。
 - UI 修改检查加载、空数据、错误提示和卡池切换；图表修改核对数据顺序、标签与数值。缺少可运行环境时明确说明未验证部分。
 - 数据库或官方接口相关验证优先使用测试库、脱敏样例或 mock。不要为了验证代码自行清空、重建或批量改写用户现有记录；需要真实数据写入或数据库结构变更时先明确目标环境与范围。
@@ -99,6 +93,6 @@ node --check backend_node/index.js
 
 - 开始修改前查看 `git status`，保留用户已有修改、未跟踪文件和本地实验内容。不要擅自覆盖、删除或重置它们；提交时仅包含本次任务文件。
 - 未经用户要求，不执行提交、推送或发布操作。
-- 不将数据库密码、完整抽卡链接、记录访问参数或真实玩家数据复制到新文档、日志和测试样例。新增配置使用环境变量或脱敏示例；本地忽略的 Java resources 配置不应强制加入版本控制。
+- 不将数据库密码、完整抽卡链接、记录访问参数或真实玩家数据复制到新文档、日志和测试样例。新增配置使用环境变量或脱敏示例。
 - 常规实现细节可按现有风格自行决定。需求不清、统计口径有多种解释、接口兼容性需要取舍、后端方向变化或涉及现有数据破坏时，向用户提出具体问题；能独立完成的部分继续推进。
 - 若任务涉及开发日志，追加准确的实现与验证记录，不把计划写成已经完成的功能。项目结构或命令变化时同步修正本文件。

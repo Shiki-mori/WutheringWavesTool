@@ -3,21 +3,25 @@ const mysql = require('mysql2/promise');
 const fs = require('fs');
 const path = require('path');
 
-// Windows 目标机凭据保存在用户私有目录，避免将本机密码写入仓库。
-const localConfigPath = process.env.WWT_DB_CONFIG || (process.env.LOCALAPPDATA
-    ? path.join(process.env.LOCALAPPDATA, 'WutheringWavesTool', 'db.local.json')
-    : null);
-if (process.env.WWT_DB_CONFIG && !fs.existsSync(localConfigPath)) {
-    throw new Error(`指定的本机数据库配置不存在：${localConfigPath}`);
+// 数据库凭据只从用户私有目录读取，仓库中不保存任何账户或密码。
+// 优先使用 WWT_DB_CONFIG；否则 Windows 读 %LOCALAPPDATA%，其他系统读 ~/.config。
+const defaultConfigDir = process.env.LOCALAPPDATA
+    || process.env.XDG_CONFIG_HOME
+    || path.join(require('os').homedir(), '.config');
+const localConfigPath = process.env.WWT_DB_CONFIG
+    || path.join(defaultConfigDir, 'WutheringWavesTool', 'db.local.json');
+if (!fs.existsSync(localConfigPath)) {
+    throw new Error(`本机数据库配置不存在：${localConfigPath}，请参照 README 创建，或通过 WWT_DB_CONFIG 指定路径`);
 }
-const localConfig = localConfigPath && fs.existsSync(localConfigPath)
-    ? JSON.parse(fs.readFileSync(localConfigPath, 'utf8'))
-    : {};
+const localConfig = JSON.parse(fs.readFileSync(localConfigPath, 'utf8'));
+for (const key of ['user', 'password']) {
+    if (!localConfig[key]) {
+        throw new Error(`本机数据库配置缺少字段 ${key}：${localConfigPath}`);
+    }
+}
 
 const pool = mysql.createPool({
     host: 'localhost',
-    user: 'analyzer_user',
-    password: 'vhuf@nreiLd67gIO',
     database: 'analyzer',
     ...localConfig,
 

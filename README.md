@@ -2,7 +2,7 @@
 
 一个用于本地保存和分析《鸣潮》唤取记录的 Web 工具。粘贴游戏内的唤取记录链接后，由后端获取记录、预处理并写入数据库，再通过前端查看各卡池的抽卡统计与图表。
 
-当前业务后端为 **Node.js + Express**，前端为 **Vue 3 + TypeScript**，数据保存在本地 **MySQL / MariaDB**。仓库中的 Java 工程用于实验，尚未承接抽卡业务。
+当前业务后端为 **Node.js + Express**，前端为 **Vue 3 + TypeScript**，数据保存在本地 **MySQL / MariaDB**。
 
 ## 功能
 
@@ -32,7 +32,6 @@ Vue 页面 → Node.js 后端 → 游戏官方记录接口
 | 可视化 | ECharts 6、vue-echarts |
 | 业务后端 | Node.js、Express 5、Axios、mysql2（CommonJS） |
 | 数据存储 | MySQL / MariaDB |
-| Java 实验 | Java 17、Spring Boot 4.0.5、Maven Wrapper |
 
 ```text
 WutheringWavesTool/
@@ -40,15 +39,13 @@ WutheringWavesTool/
 │   ├── src/App.vue          # 页面入口与操作流程
 │   ├── src/api/             # Axios 配置、接口调用与类型
 │   ├── src/components/      # 卡池总览与详情图表
-│   ├── src/utils/           # 日期、统计展示口径与图表配置
-│   └── tests/              # 部分统计展示口径的回归用例
+│   └── src/utils/           # 日期、统计展示口径与图表配置
 ├── backend_node/
 │   ├── index.js            # Express 入口，端口 3000
 │   ├── api/                # 查询与分析路由
 │   ├── service/            # 抓取、预处理、保存流程编排
 │   ├── utils/              # 链接解析、请求、数据库与统计算法
 │   └── config/             # 常驻角色等业务配置
-├── backend_java/           # Java 实验工程
 ├── scripts/windows-runtime.ps1  # Windows 进程与服务管理
 ├── developmentLog/         # 开发记录，含历史方案与设计草案
 ├── run_windows.cmd         # Windows 启动入口
@@ -97,7 +94,7 @@ Pop-Location
 
 去重唯一键应覆盖 `(uid, pool_type, time, in_second_seq)`；抽卡分析使用 `draw_order` 确定业务顺序，不能用数据库自增 ID 替代。
 
-将连接参数保存到私有 JSON 文件，例如本机的 `%LOCALAPPDATA%\WutheringWavesTool\db.local.json`。以下仅为占位示例，需替换账户和密码：
+将连接参数保存到私有 JSON 文件：Windows 为 `%LOCALAPPDATA%\WutheringWavesTool\db.local.json`，Linux 等其他系统为 `~/.config/WutheringWavesTool/db.local.json`（设置了 `XDG_CONFIG_HOME` 时以其为准）。以下仅为占位示例，需替换账户和密码：
 
 ```json
 {
@@ -109,7 +106,7 @@ Pop-Location
 }
 ```
 
-手动启动后端时，通过 `WWT_DB_CONFIG` 指定配置文件的绝对路径。未显式指定时，后端会尝试读取上述用户目录中的文件；文件缺失时仍可能使用源码中的历史默认配置，因此应明确准备私有配置。不要将数据库凭据或完整抽卡链接提交到仓库，私有文件应仅允许当前用户和 SYSTEM 访问。
+也可以通过 `WWT_DB_CONFIG` 指定配置文件的绝对路径。未显式指定时，后端读取上述用户目录中的文件；文件缺失或缺少 `user` / `password` 时后端直接报错退出，源码中不保留任何默认凭据。不要将数据库凭据或完整抽卡链接提交到仓库，私有文件应仅允许当前用户和 SYSTEM 访问。
 
 ### 3. 启动方式
 
@@ -223,18 +220,7 @@ node --check backend_node/index.js
 node --check backend_node/utils/analyzePool.js
 ```
 
-前端暂无独立的 npm 测试或 lint 脚本，`frontend/tests/` 现有用例仅覆盖部分统计展示口径。Node.js 后端的 `npm test` 是返回失败的占位脚本。构建或语法检查均不能替代导入、去重、数据库读写及真实页面验收。
-
-只有开发 Java 实验工程时才需要 Java 17；可在仓库根目录执行：
-
-```powershell
-Push-Location backend_java
-.\mvnw.cmd test
-# 如需启动实验服务：.\mvnw.cmd spring-boot:run
-Pop-Location
-```
-
-Java 根工程目前仅有基础启动与 `/hello` 接口，默认端口为 `8080`。`gacha-common/`、`gacha-pojo/`、`gacha-server/` 尚未接入根 Maven 模块配置，上述测试不覆盖这些实验目录，也不能验证 Node.js 业务。
+前端暂无测试或 lint 脚本。Node.js 后端的 `npm test` 是返回失败的占位脚本。构建或语法检查均不能替代导入、去重、数据库读写及真实页面验收。
 
 ## 常见问题
 
