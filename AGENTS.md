@@ -17,7 +17,7 @@
 | `frontend/src/App.vue` | 当前页面入口、操作流程和统计展示。 |
 | `frontend/src/api/` | Axios 请求配置、接口调用和现有响应类型。 |
 | `frontend/src/components/` | 可复用组件，包含卡池总览和详情图表。 |
-| `frontend/src/utils/`、`types/`、`views/` | 分别用于数据转换、共享类型和页面组件，目前主要是目录说明。 |
+| `frontend/src/utils/` | 卡池标签、统计与日期等数据转换函数，以及图表主题。 |
 | `backend_node/index.js` | Express 服务入口与路由挂载，监听 3000 端口。 |
 | `backend_node/api/` | HTTP 请求和响应处理。 |
 | `backend_node/service/` | 业务流程编排，例如 `fetchAndSave.js`。 |
@@ -25,7 +25,6 @@
 | `backend_node/config/` | 业务配置，例如常驻角色 ID 列表。 |
 | `backend_java/` | Java 17、Spring Boot 4.0.5、Maven Wrapper 实验工程；当前可构建源码位于 `src/`，只有基础启动与 `/hello` 接口。 |
 | `backend_java/gacha-common/`、`gacha-pojo/`、`gacha-server/` | 实验目录，尚未在根 `pom.xml` 中配置为 Maven 模块；现有测试不代表完整实现。 |
-| `database/` | 数据库相关预留目录，当前没有可复用的建表或迁移脚本。 |
 | `developmentLog/` | 开发过程、问题记录和设计思路；包含历史版本及未实现方案，使用前与现有代码核对。 |
 
 ## 安装、运行与验证
@@ -54,7 +53,7 @@ node --check backend_node/index.js
 
 - 前端 API 地址目前写在 `frontend/src/api/request.ts`，为 `http://localhost:3000`；Java 实验服务默认端口为 8080。Vite 的实际访问地址以启动输出为准。
 - Node.js 后端使用 MySQL，连接配置位于 `backend_node/utils/db.js`；现有数据库名为 `analyzer`，核心表为 `analyzer_records`。安装 npm 依赖不会自动创建数据库或表。
-- `run_node.sh` 依赖 GNOME Console 的 `kgx`，其他环境优先使用上述直接启动命令。根目录 `run.sh` 只有 Maven 启动命令，不能视为整个项目的可靠启动入口。
+- `run_node.sh` 依赖 GNOME Console 的 `kgx`，其他环境优先使用上述直接启动命令。
 - 本台 Windows 使用根目录 `run_windows.cmd` / `stop_windows.cmd`（内部调用 `scripts/windows-runtime.ps1`），根据 UAC 提示授予管理员权限，分别启动或停止 MariaDB 服务及 Node 前后端。服务名 `MariaDB`、配置路径 `D:\DevTools\MariaDB\data\my.ini`；不改变服务的手动启动设置。前端固定为 `http://127.0.0.1:5173/`。
 - Windows 运行状态和日志位于忽略的 `.runtime-windows/`；停止时核对 PID、启动时间与入口路径，不按端口或名称批量结束 Node。已有非脚本管理的端口占用会报错，需先结束原来的项目启动方式。双击启动脚本后无需保留终端窗口；结束请运行停止脚本。可在 PowerShell 中直接运行 `./run_windows.cmd` 或 `./stop_windows.cmd`。
 - 如果自动提权没有显示 UAC，右键脚本选择“以管理员身份运行”，或在手动打开的管理员 PowerShell 中执行；无需修改执行策略或服务权限。

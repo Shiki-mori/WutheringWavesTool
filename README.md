@@ -159,7 +159,7 @@ npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
 - 停止脚本会核对所管理进程的身份，并停止本项目的前后端及 `MariaDB` 服务；如果其他应用共用该数据库服务，需考虑其影响。
 - 若未出现 UAC，可右键以管理员身份运行，或从管理员 PowerShell 执行，无需修改执行策略或服务权限。
 
-根目录 `run_node.sh` 依赖 GNOME Console（`kgx`）；`run.sh` 仅包含 Maven 命令，不能作为整个项目的启动入口。
+根目录 `run_node.sh` 依赖 GNOME Console（`kgx`）。
 
 ## 使用步骤
 
