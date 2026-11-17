@@ -1,13 +1,10 @@
 <template>
-  <section class="chart-card">
-    <header class="chart-head">
-      <div>
-        <p class="chart-kicker">Overview</p>
-        <h3>卡池抽卡总览</h3>
-      </div>
-      <ul class="chart-legend">
-        <li><i class="dot dot-pink"></i>总抽数</li>
-        <li><i class="dot dot-lilac"></i>五星数</li>
+  <section class="overview">
+    <header class="overview-head">
+      <h3>各卡池抽数与五星</h3>
+      <ul class="overview-legend">
+        <li><i class="swatch swatch-pink"></i>总抽数</li>
+        <li><i class="swatch swatch-cyan"></i>五星数</li>
       </ul>
     </header>
     <VChart class="chart" :init-options="chartInitOptions" :option="option" autoresize />
@@ -26,8 +23,10 @@ import { getPoolLabel } from '../utils/poolLabels'
 import { getPoolFiveStarCount } from '../utils/poolStats'
 import {
   CHART_AXIS_LINE,
+  CHART_CYAN,
   CHART_INK_SOFT,
-  LILAC_GRADIENT,
+  CHART_PINK,
+  CYAN_GRADIENT,
   PINK_GRADIENT,
   chartAxisLabel,
   chartSplitLine,
@@ -67,7 +66,7 @@ const option = computed(() => ({
     trigger: 'axis',
     axisPointer: {
       type: 'shadow',
-      shadowStyle: { color: 'rgba(253, 208, 224, 0.32)' }
+      shadowStyle: { color: 'rgba(214, 190, 235, 0.07)' }
     }
   },
   grid: {
@@ -83,8 +82,8 @@ const option = computed(() => ({
     axisLine: { lineStyle: { color: CHART_AXIS_LINE } },
     axisLabel: {
       ...chartAxisLabel,
-      color: '#5e4452',
-      fontWeight: 600,
+      color: CHART_INK_SOFT,
+      fontWeight: 500,
       margin: 14,
       interval: 0,
       lineHeight: 16,
@@ -124,10 +123,9 @@ const option = computed(() => ({
       barGap: '30%',
       itemStyle: {
         color: linearGradient(PINK_GRADIENT[0], PINK_GRADIENT[1]),
-        borderRadius: [10, 10, 4, 4]
+        borderRadius: [3, 3, 0, 0]
       },
-      emphasis: { itemStyle: { shadowBlur: 12, shadowColor: 'rgba(226, 98, 143, 0.35)' } },
-      label: { show: true, position: 'top', color: '#c94a77', fontWeight: 700, fontSize: 12 },
+      label: { show: true, position: 'top', color: CHART_PINK, fontWeight: 600, fontSize: 13 },
       data: props.pools.map((item) => item.data.total)
     },
     {
@@ -136,11 +134,10 @@ const option = computed(() => ({
       yAxisIndex: 1,
       barMaxWidth: 34,
       itemStyle: {
-        color: linearGradient(LILAC_GRADIENT[0], LILAC_GRADIENT[1]),
-        borderRadius: [10, 10, 4, 4]
+        color: linearGradient(CYAN_GRADIENT[0], CYAN_GRADIENT[1]),
+        borderRadius: [3, 3, 0, 0]
       },
-      emphasis: { itemStyle: { shadowBlur: 12, shadowColor: 'rgba(166, 139, 212, 0.35)' } },
-      label: { show: true, position: 'top', color: '#8a6dbd', fontWeight: 700, fontSize: 12 },
+      label: { show: true, position: 'top', color: CHART_CYAN, fontWeight: 600, fontSize: 13 },
       data: props.pools.map((item) => getPoolFiveStarCount(item))
     }
   ]
@@ -148,73 +145,60 @@ const option = computed(() => ({
 </script>
 
 <style scoped>
-.chart-card {
-  display: flex;
-  flex-direction: column;
+.overview {
   min-width: 0;
-  padding: 22px 22px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface-strong);
-  box-shadow: var(--shadow-sm);
+  padding: 22px 24px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
 }
 
-.chart-head {
+.overview-head {
   display: flex;
-  align-items: flex-end;
+  flex-wrap: wrap;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-}
-
-.chart-kicker {
-  color: var(--pink-500);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  gap: 8px 16px;
 }
 
 h3 {
-  margin-top: 2px;
-  color: var(--ink-900);
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.chart-legend {
-  display: flex;
-  gap: 14px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--ink-500);
-  font-size: 13px;
+  color: var(--text);
+  font-size: 16px;
   font-weight: 600;
 }
 
-.chart-legend li {
+.overview-legend {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+.overview-legend li {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-.dot {
+.swatch {
   width: 10px;
   height: 10px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-.dot-pink {
-  background: linear-gradient(180deg, #f8aac6, #e2628f);
+.swatch-pink {
+  background: var(--pink);
 }
 
-.dot-lilac {
-  background: linear-gradient(180deg, #dccbf3, #a68bd4);
+.swatch-cyan {
+  background: var(--cyan);
 }
 
 .chart {
-  flex: 1;
   width: 100%;
-  min-height: 340px;
+  height: 340px;
 }
 </style>

@@ -4,14 +4,11 @@
 
     <div class="detail-content">
       <header class="detail-header">
-        <div>
-          <p class="detail-eyebrow">单卡池详情</p>
-          <h3>{{ poolLabel }}</h3>
-        </div>
+        <h3>{{ poolLabel }}</h3>
         <p class="detail-note">共记录 {{ pool.data.pityList.length }} 次五星</p>
       </header>
 
-      <dl class="metric-grid">
+      <dl class="metric-row">
         <div v-for="metric in metrics" :key="metric.label" class="metric" :class="metric.tone">
           <dt>{{ metric.label }}</dt>
           <dd>{{ metric.value }}</dd>
@@ -31,8 +28,7 @@
           />
           <ul class="up-breakdown">
             <li v-for="item in upBreakdown" :key="item.label">
-              <i :style="{ background: item.color }"></i>
-              <span>{{ item.label }}</span>
+              <span><i :style="{ background: item.color }"></i>{{ item.label }}</span>
               <strong>{{ item.count }}</strong>
             </li>
           </ul>
@@ -42,9 +38,9 @@
           <header class="chart-box-head">
             <h4>出金抽数分布<small>单位：抽</small></h4>
             <ul class="legend">
-              <li><i :style="{ background: LIGHT_GREEN }"></i>≤ 40</li>
-              <li><i :style="{ background: LEMON_YELLOW }"></i>41 – 65</li>
-              <li><i :style="{ background: ROSE_RED }"></i>&gt; 65</li>
+              <li><i :style="{ background: PITY_EARLY }"></i>≤ 40</li>
+              <li><i :style="{ background: PITY_MID }"></i>41 – 65</li>
+              <li><i :style="{ background: PITY_LATE }"></i>&gt; 65</li>
               <li><i class="legend-dashed"></i>当前已垫</li>
             </ul>
           </header>
@@ -72,8 +68,14 @@ import type { PoolAnalyzeItem } from '../api/records'
 import { getPoolFiveStarCount } from '../utils/poolStats'
 import {
   CHART_AXIS_LINE,
+  CHART_CYAN,
+  CHART_GOLD,
   CHART_INK,
   CHART_INK_SOFT,
+  CHART_PANEL,
+  CHART_PINK,
+  CHART_RED,
+  CHART_UNKNOWN,
   chartAxisLabel,
   chartSplitLine,
   chartTextStyle,
@@ -92,22 +94,22 @@ const chartInitOptions = { renderer: 'svg' as const }
 
 const isPoolOne = computed(() => props.pool.poolType === 1)
 
-const LIGHT_GREEN = '#7fd3a6'
-const LEMON_YELLOW = '#f5d56a'
-const ROSE_RED = '#f07d9c'
-const UNKNOWN_GRAY = '#c9ccd8'
+// 出金越早越好：青 = 早出，金 = 中段，红 = 接近保底
+const PITY_EARLY = CHART_CYAN
+const PITY_MID = CHART_GOLD
+const PITY_LATE = CHART_RED
 
 const PITY_GRADIENT_START: Record<string, string> = {
-  [LIGHT_GREEN]: '#c9f0da',
-  [LEMON_YELLOW]: '#fbedb3',
-  [ROSE_RED]: '#fcc6d5'
+  [PITY_EARLY]: 'rgba(134, 219, 233, 0.3)',
+  [PITY_MID]: 'rgba(237, 200, 114, 0.3)',
+  [PITY_LATE]: 'rgba(240, 96, 110, 0.3)'
 }
 
 const metrics = computed(() => {
   const { data } = props.pool
   const list = [
-    { label: '总抽数', value: String(data.total), tone: 'tone-pink' },
-    { label: '五星', value: String(getPoolFiveStarCount(props.pool)), tone: 'tone-lilac' },
+    { label: '总抽数', value: String(data.total), tone: '' },
+    { label: '五星', value: String(getPoolFiveStarCount(props.pool)), tone: '' },
     { label: '平均出金', value: data.avgPity, tone: '' }
   ]
 
@@ -117,7 +119,7 @@ const metrics = computed(() => {
 
   list.push(
     { label: 'UP 率', value: data.upRate, tone: '' },
-    { label: '当前已垫', value: String(data.已垫), tone: 'tone-outline' }
+    { label: '当前已垫', value: String(data.已垫), tone: 'tone-current' }
   )
   return list
 })
@@ -126,9 +128,9 @@ const metrics = computed(() => {
 const upBreakdown = computed(() => {
   const list = props.pool.data.pityList
   return [
-    { label: '限定', color: LIGHT_GREEN, count: list.filter((item) => item.isUp === true).length },
-    { label: '歪', color: ROSE_RED, count: list.filter((item) => item.isUp === false).length },
-    { label: '未知', color: UNKNOWN_GRAY, count: list.filter((item) => item.isUp === null).length }
+    { label: '限定', color: PITY_EARLY, count: list.filter((item) => item.isUp === true).length },
+    { label: '歪', color: PITY_LATE, count: list.filter((item) => item.isUp === false).length },
+    { label: '未知', color: CHART_UNKNOWN, count: list.filter((item) => item.isUp === null).length }
   ]
 })
 
@@ -137,7 +139,7 @@ const ringOption = computed(() => {
   const upCount = list.filter((item) => item.isUp === true).length
   const data = list.map((item, index) => {
     const color =
-      item.isUp === true ? LIGHT_GREEN : item.isUp === false ? ROSE_RED : UNKNOWN_GRAY
+      item.isUp === true ? PITY_EARLY : item.isUp === false ? PITY_LATE : CHART_UNKNOWN
     return {
       value: 1,
       name: item.name || `五星 ${index + 1}`,
@@ -156,13 +158,13 @@ const ringOption = computed(() => {
       top: 'middle',
       itemGap: 4,
       textStyle: {
-        fontSize: 30,
-        fontWeight: 800,
-        color: '#c94a77'
+        fontSize: 34,
+        fontWeight: 600,
+        color: CHART_INK
       },
       subtextStyle: {
         fontSize: 12,
-        fontWeight: 600,
+        fontWeight: 500,
         color: CHART_INK_SOFT
       }
     },
@@ -188,8 +190,8 @@ const ringOption = computed(() => {
         padAngle: 1.5,
         avoidLabelOverlap: true,
         itemStyle: {
-          borderRadius: 6,
-          borderColor: '#fff',
+          borderRadius: 2,
+          borderColor: CHART_PANEL,
           borderWidth: 2
         },
         emphasis: {
@@ -200,8 +202,8 @@ const ringOption = computed(() => {
           show: list.length <= 16,
           formatter: '{b}',
           fontSize: 11,
-          fontWeight: 600,
-          color: CHART_INK
+          fontWeight: 500,
+          color: CHART_INK_SOFT
         },
         labelLine: {
           show: list.length <= 16,
@@ -217,14 +219,14 @@ const ringOption = computed(() => {
 
 function getPityColor(count: number) {
   if (count <= 40) {
-    return LIGHT_GREEN
+    return PITY_EARLY
   }
 
   if (count <= 65) {
-    return LEMON_YELLOW
+    return PITY_MID
   }
 
-  return ROSE_RED
+  return PITY_LATE
 }
 
 function getBarColor(count: number) {
@@ -240,11 +242,11 @@ const detailBarItems = computed(() => {
     isUp: null as boolean | null,
     isCurrentPity: true,
     itemStyle: {
-      color: 'rgba(255, 255, 255, 0.6)',
+      color: 'rgba(255, 255, 255, 0.03)',
       borderColor: getPityColor(currentPity),
       borderType: 'dashed' as const,
-      borderWidth: 2,
-      borderRadius: [0, 8, 8, 0]
+      borderWidth: 1.5,
+      borderRadius: [0, 2, 2, 0]
     }
   }
 
@@ -255,7 +257,7 @@ const detailBarItems = computed(() => {
     isCurrentPity: false,
     itemStyle: {
       color: getBarColor(item.count),
-      borderRadius: [0, 8, 8, 0]
+      borderRadius: [0, 2, 2, 0]
     }
   }))
 
@@ -306,8 +308,8 @@ const option = computed(() => {
       axisLabel: {
         interval: 0,
         fontSize: 12,
-        fontWeight: 600,
-        color: '#5e4452'
+        fontWeight: 500,
+        color: CHART_INK_SOFT
       },
       data: items.map((item) => item.name)
     },
@@ -315,11 +317,11 @@ const option = computed(() => {
       {
         name: '出金抽数',
         type: 'bar',
-        barMaxWidth: 18,
+        barMaxWidth: 14,
         showBackground: true,
         backgroundStyle: {
-          color: 'rgba(253, 208, 224, 0.18)',
-          borderRadius: [0, 8, 8, 0]
+          color: 'rgba(214, 190, 235, 0.05)',
+          borderRadius: [0, 2, 2, 0]
         },
         label: {
           show: true,
@@ -337,21 +339,21 @@ const option = computed(() => {
             return data.isUp === false ? `{v|${data.value}} {miss|歪}` : `{v|${data.value}}`
           },
           rich: {
-            v: { fontSize: 12, fontWeight: 700, color: CHART_INK },
+            v: { fontSize: 13, fontWeight: 600, color: CHART_INK },
             miss: {
               fontSize: 11,
-              fontWeight: 700,
-              color: '#d6456b',
-              backgroundColor: 'rgba(240, 125, 156, 0.16)',
-              borderRadius: 6,
+              fontWeight: 600,
+              color: CHART_RED,
+              backgroundColor: 'rgba(240, 96, 110, 0.16)',
+              borderRadius: 2,
               padding: [2, 5]
             },
             cur: {
               fontSize: 11,
-              fontWeight: 700,
-              color: '#a3375e',
-              backgroundColor: 'rgba(253, 208, 224, 0.6)',
-              borderRadius: 6,
+              fontWeight: 600,
+              color: CHART_PINK,
+              backgroundColor: 'rgba(244, 166, 200, 0.14)',
+              borderRadius: 2,
               padding: [2, 5]
             }
           }
@@ -366,131 +368,97 @@ const option = computed(() => {
 <style scoped>
 .detail-panel {
   position: relative;
-  /* clip 不创建滚动容器，保证环形图卡片的 sticky 相对视口生效 */
+  /* clip 不创建滚动容器，保证环形图的 sticky 相对视口生效 */
   overflow: clip;
-  margin-top: 18px;
-  padding: 26px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 240, 246, 0.94) 100%);
-  box-shadow: var(--shadow-md);
+  padding: 28px 28px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
 }
 
-/* 背景图只铺在右上角并向左下淡出，避免干扰图表阅读 */
+/* 取原画左侧的黑发角色，只在右上角隐约露出，不干扰图表阅读 */
 .detail-art {
   position: absolute;
   inset: 0 0 auto auto;
-  width: min(62%, 760px);
-  height: 360px;
-  background: url('/images/pool-detail-bg.jpg') center 28% / cover no-repeat;
-  opacity: 0.32;
-  mask-image: radial-gradient(ellipse at 78% 18%, #000 18%, transparent 70%);
+  width: min(46%, 560px);
+  height: 300px;
+  background: url('/images/pool-detail-bg.jpg') 0% 29% / 340% auto no-repeat;
+  opacity: 0.3;
+  mask-image: radial-gradient(ellipse at 70% 20%, #000 10%, transparent 68%);
   pointer-events: none;
 }
 
 .detail-content {
   position: relative;
-  z-index: 1;
 }
 
 .detail-header {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.detail-eyebrow {
-  margin-bottom: 4px;
-  color: var(--pink-500);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
 }
 
 h3 {
-  color: var(--ink-900);
+  color: var(--text);
   font-size: 26px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .detail-note {
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid var(--border);
-  color: var(--ink-500);
-  font-size: 13px;
-  font-weight: 600;
-  backdrop-filter: blur(6px);
+  color: var(--text-soft);
+  font-size: 14px;
 }
 
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
-  gap: 12px;
-  margin: 0 0 18px;
+/* 指标排成一行台账，用竖线分隔，不再各自成卡片 */
+.metric-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 0;
+  margin: 24px 0 0;
+  padding: 0 0 24px;
+  border-bottom: 1px solid var(--line);
 }
 
 .metric {
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
+  min-width: 124px;
+  padding: 0 28px;
+  border-left: 1px solid var(--line);
+}
+
+.metric:first-child {
+  padding-left: 0;
+  border-left: 0;
 }
 
 .metric dt {
-  color: var(--ink-500);
-  font-size: 12px;
-  font-weight: 600;
+  color: var(--text-soft);
+  font-size: 13px;
 }
 
 .metric dd {
-  margin: 4px 0 0;
-  color: var(--ink-900);
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.15;
+  margin: 2px 0 0;
+  color: var(--text);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
-.metric.tone-pink {
-  border-color: transparent;
-  background: linear-gradient(135deg, #f592b5 0%, #e2628f 100%);
-  box-shadow: var(--shadow-pink);
-}
-
-.metric.tone-pink dt,
-.metric.tone-pink dd {
-  color: #fff;
-}
-
-.metric.tone-lilac {
-  background: linear-gradient(135deg, rgba(236, 226, 250, 0.95) 0%, rgba(220, 203, 243, 0.9) 100%);
-  border-color: rgba(166, 139, 212, 0.35);
-}
-
-.metric.tone-lilac dd {
-  color: #6f53a3;
-}
-
-.metric.tone-outline {
-  border-style: dashed;
-  border-color: var(--border-strong);
-}
-
-.metric.tone-outline dd {
-  color: var(--pink-600);
+/* 当前已垫尚未出金，与图表里的虚线柱保持同一种表达 */
+.metric.tone-current dd {
+  color: var(--pink);
+  text-decoration: underline dashed 1.5px;
+  text-underline-offset: 7px;
 }
 
 .chart-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
+  gap: 0 36px;
   align-items: start;
+  margin-top: 24px;
 }
 
 .chart-grid.with-ring {
@@ -499,17 +467,12 @@ h3 {
 
 .chart-box {
   min-width: 0;
-  padding: 18px 18px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: blur(10px);
 }
 
 .chart-box-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 8px 14px;
   margin-bottom: 4px;
@@ -521,82 +484,87 @@ h3 {
 }
 
 h4 {
-  margin: 0;
-  color: var(--ink-900);
+  color: var(--text);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 h4 small {
-  margin-left: 8px;
-  color: var(--ink-300);
+  margin-left: 10px;
+  color: var(--text-faint);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .up-breakdown {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
   margin: 4px 0 10px;
   padding: 0;
+  border-top: 1px solid var(--line);
   list-style: none;
 }
 
 .up-breakdown li {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 2px;
-  padding: 10px 6px;
-  border-radius: var(--radius-sm);
-  background: var(--pink-50);
-  color: var(--ink-500);
-  font-size: 12px;
-  font-weight: 600;
+  padding: 12px 0 0 16px;
+  border-left: 1px solid var(--line);
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+.up-breakdown li:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.up-breakdown span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .up-breakdown i {
-  width: 22px;
-  height: 4px;
-  margin-bottom: 4px;
-  border-radius: 999px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
 }
 
 .up-breakdown strong {
-  color: var(--ink-900);
-  font-size: 20px;
-  font-weight: 800;
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 12px;
+  gap: 6px 14px;
   margin: 0;
   padding: 0;
   list-style: none;
-  color: var(--ink-500);
+  color: var(--text-soft);
   font-size: 12px;
-  font-weight: 600;
 }
 
 .legend li {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .legend i {
   width: 10px;
   height: 10px;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .legend i.legend-dashed {
-  border: 1.5px dashed var(--pink-500);
-  background: #fff;
+  border: 1.5px dashed var(--pink);
 }
 
 .detail-chart {
@@ -605,12 +573,13 @@ h4 small {
 }
 
 .detail-chart-ring {
-  height: 360px;
+  height: 340px;
 }
 
 @media (max-width: 960px) {
   .chart-grid.with-ring {
     grid-template-columns: minmax(0, 1fr);
+    row-gap: 24px;
   }
 
   .chart-box-sticky {
@@ -620,12 +589,7 @@ h4 small {
 
 @media (max-width: 720px) {
   .detail-panel {
-    padding: 18px;
-  }
-
-  .detail-header {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 20px 16px 14px;
   }
 
   h3 {
@@ -633,8 +597,26 @@ h4 small {
   }
 
   .detail-art {
-    width: 100%;
-    height: 240px;
+    width: 80%;
+    height: 220px;
+    opacity: 0.28;
+  }
+
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 0;
+  }
+
+  .metric,
+  .metric:first-child {
+    min-width: 0;
+    padding: 0 0 0 14px;
+    border-left: 1px solid var(--line);
+  }
+
+  .metric dd {
+    font-size: 24px;
   }
 
   .detail-chart-ring {

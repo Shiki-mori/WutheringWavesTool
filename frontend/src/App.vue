@@ -2,135 +2,82 @@
   <main class="page-shell">
     <header class="hero">
       <div class="hero-art" aria-hidden="true"></div>
-      <div class="hero-content">
-        <p class="eyebrow"><span class="eyebrow-dot"></span>Wuthering Waves Tool</p>
-        <h1>抽卡<span>分析</span></h1>
+      <div class="hero-body">
+        <h1>鸣潮抽卡分析</h1>
         <p class="hero-copy">
-          解析唤取记录链接、同步到本地数据库，并按卡池统计出金、UP 与保底情况。
+          粘贴游戏内的唤取记录链接，记录会保存到本地数据库，再按卡池统计出金、UP 与保底。
         </p>
-        <ol class="hero-steps">
-          <li v-for="step in heroSteps" :key="step.index" :class="{ done: step.done }">
-            <span class="hero-step-index">{{ step.done ? '✓' : step.index }}</span>
-            {{ step.label }}
-          </li>
-        </ol>
-      </div>
-    </header>
 
-    <section class="workflow">
-      <article class="step-card step-card-wide">
-        <header class="step-head">
-          <span class="step-index">01</span>
-          <div>
-            <h2>链接分析</h2>
-            <p class="step-desc">粘贴游戏内唤取记录链接，获取并保存最新记录。</p>
-          </div>
-        </header>
-        <div class="control-row">
+        <form class="link-form" @submit.prevent="gachaAnalyze">
           <label class="input-wrap">
+            <span class="sr-only">唤取记录链接</span>
             <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"
               />
             </svg>
-            <input
-              v-model="inputUrl"
-              class="text-input"
-              placeholder="输入链接"
-              @keydown.enter="gachaAnalyze"
-            />
+            <input v-model="inputUrl" class="text-input" placeholder="粘贴唤取记录链接" />
           </label>
-          <button class="btn btn-primary" :disabled="gachaLoading" @click="gachaAnalyze">
+          <button type="submit" class="btn btn-primary" :disabled="gachaLoading">
             <span v-if="gachaLoading" class="spinner"></span>
-            {{ gachaLoading ? '分析中...' : '开始分析' }}
+            {{ gachaLoading ? '获取中…' : '获取记录' }}
           </button>
-        </div>
-        <pre v-if="urlresult" class="status-box" :class="`is-${urlStatus}`">{{ urlresult }}</pre>
-      </article>
+        </form>
+        <pre v-if="urlresult" class="link-result" :class="`is-${urlStatus}`" role="status">{{
+          urlresult
+        }}</pre>
+      </div>
+    </header>
 
-      <article class="step-card">
-        <header class="step-head">
-          <span class="step-index">02</span>
-          <div>
-            <h2>数据库查询</h2>
-            <p class="step-desc">查看已入库记录数量与建议更新时间。</p>
-          </div>
-        </header>
-        <div class="control-row">
-          <button class="btn btn-secondary" @click="readRecords" :disabled="recordsLoading">
-            <span v-if="recordsLoading" class="spinner spinner-pink"></span>
-            {{ recordsLoading ? '查询中...' : '查询数据库' }}
-          </button>
-        </div>
-        <p v-if="recordsMessage" class="status" :class="`is-${recordsStatus}`">
-          {{ recordsMessage }}
+    <section class="db-bar" aria-label="本地数据库">
+      <div class="db-action">
+        <button class="btn btn-ghost" :disabled="recordsLoading" @click="readRecords">
+          <span v-if="recordsLoading" class="spinner"></span>
+          {{ recordsLoading ? '查询中…' : '查询记录' }}
+        </button>
+        <p class="db-status" :class="recordsMessage ? `is-${recordsStatus}` : ''" role="status">
+          {{ recordsMessage || '查看已保存的记录数量和建议更新时间。' }}
         </p>
         <pre v-if="recordsResult" class="result-box">{{ JSON.stringify(recordsResult, null, 2) }}</pre>
-      </article>
+      </div>
 
-      <article class="step-card">
-        <header class="step-head">
-          <span class="step-index">03</span>
-          <div>
-            <h2>数据库分析</h2>
-            <p class="step-desc">按卡池汇总出金抽数、UP 率与当前已垫。</p>
-          </div>
-        </header>
-        <div class="control-row">
-          <button class="btn btn-primary" @click="analyzeRecords" :disabled="analyzeLoading">
-            <span v-if="analyzeLoading" class="spinner"></span>
-            {{ analyzeLoading ? '分析中...' : '分析数据库结果' }}
-          </button>
-        </div>
-        <p v-if="analyzeMessage" class="status" :class="`is-${analyzeStatus}`">
-          {{ analyzeMessage }}
+      <div class="db-action">
+        <button class="btn btn-primary" :disabled="analyzeLoading" @click="analyzeRecords">
+          <span v-if="analyzeLoading" class="spinner"></span>
+          {{ analyzeLoading ? '统计中…' : '开始统计' }}
+        </button>
+        <p class="db-status" :class="analyzeMessage ? `is-${analyzeStatus}` : ''" role="status">
+          {{ analyzeMessage || '按卡池汇总出金抽数、UP 率和当前已垫。' }}
         </p>
-      </article>
+      </div>
     </section>
 
     <section v-if="analyzeResult.length" class="results">
-      <header class="section-title">
-        <div>
-          <p class="section-kicker">Analysis</p>
-          <h2>分析总览</h2>
+      <h2 class="sr-only">统计总览</h2>
+      <dl class="summary">
+        <div v-for="item in summaryCards" :key="item.label" class="summary-item">
+          <dt>{{ item.label }}</dt>
+          <dd>{{ item.value }}</dd>
         </div>
-      </header>
-
-      <div class="summary-grid">
-        <article
-          v-for="card in summaryCards"
-          :key="card.label"
-          class="summary-card"
-          :class="{ featured: card.featured }"
-        >
-          <span class="summary-icon" aria-hidden="true">{{ card.icon }}</span>
-          <span class="summary-label">{{ card.label }}</span>
-          <strong class="summary-value">{{ card.value }}</strong>
-        </article>
-      </div>
+      </dl>
 
       <PoolSummaryChart :pools="analyzeResult" />
 
       <section v-if="detailPools.length" class="detail-section">
-        <header class="section-title">
-          <div>
-            <p class="section-kicker">Pools</p>
-            <h2 class="detail-title">单个卡池信息</h2>
-          </div>
-          <div class="tab-row" role="tablist">
-            <button
-              v-for="pool in detailPools"
-              :key="pool.poolType"
-              class="tab-button"
-              :class="{ active: pool.poolType === activePool?.poolType }"
-              role="tab"
-              :aria-selected="pool.poolType === activePool?.poolType"
-              @click="activePoolType = pool.poolType"
-            >
-              {{ getPoolLabel(pool.poolType) }}
-            </button>
-          </div>
-        </header>
+        <h2 class="sr-only">单个卡池</h2>
+        <div class="tab-row" role="tablist">
+          <button
+            v-for="pool in detailPools"
+            :key="pool.poolType"
+            class="tab-button"
+            :class="{ active: pool.poolType === activePool?.poolType }"
+            role="tab"
+            :aria-selected="pool.poolType === activePool?.poolType"
+            @click="activePoolType = pool.poolType"
+          >
+            {{ getPoolLabel(pool.poolType) }}
+          </button>
+        </div>
 
         <PoolDetailChart
           v-if="activePool"
@@ -141,15 +88,12 @@
     </section>
 
     <section v-else class="empty-state">
-      <div class="empty-orb" aria-hidden="true">
-        <span v-if="analyzeLoading" class="empty-spinner"></span>
-        <span v-else class="empty-glyph">✦</span>
-      </div>
-      <p class="empty-title">{{ analyzeLoading ? '正在分析数据库记录…' : '还没有分析结果' }}</p>
-      <p class="empty-copy">点击“分析数据库结果”后，这里会显示卡池统计图。</p>
+      <div class="empty-rings" :class="{ loading: analyzeLoading }" aria-hidden="true"></div>
+      <p class="empty-title">{{ analyzeLoading ? '正在统计数据库记录…' : '还没有统计结果' }}</p>
+      <p class="empty-copy">点击“开始统计”，这里会按卡池显示出金与 UP 情况。</p>
     </section>
 
-    <footer class="page-footer">Wuthering Waves Tool · 数据仅保存在本地数据库</footer>
+    <footer class="page-footer">记录只保存在本地数据库</footer>
   </main>
 </template>
 
@@ -182,16 +126,6 @@ const analyzeStatus = ref<StatusKind>('success')
 const analyzeResult = ref<PoolAnalyzeItem[]>([])
 const activePoolType = ref<number | null>(null)
 
-const heroSteps = computed(() => [
-  { index: 1, label: '解析链接', done: Boolean(urlresult.value) && urlStatus.value === 'success' },
-  {
-    index: 2,
-    label: '查询数据库',
-    done: Boolean(recordsMessage.value) && recordsStatus.value === 'success'
-  },
-  { index: 3, label: '统计分析', done: analyzeResult.value.length > 0 }
-])
-
 const summaryCards = computed(() => {
   if (!analyzeResult.value.length) {
     return []
@@ -205,11 +139,11 @@ const summaryCards = computed(() => {
   const avgPity = allFiveStar ? (totalPulls / allFiveStar).toFixed(2) : '0.00'
 
   return [
-    { label: '卡池数量', value: String(analyzeResult.value.length), icon: '◈', featured: false },
-    { label: '总抽数', value: String(totalPulls), icon: '✦', featured: true },
-    { label: '五星总数', value: String(totalFiveStar), icon: '★', featured: false },
-    { label: '综合平均出金', value: avgPity, icon: '◎', featured: false },
-    { label: '当前总已垫', value: String(currentPity), icon: '⧗', featured: false }
+    { label: '总抽数', value: String(totalPulls) },
+    { label: '五星总数', value: String(totalFiveStar) },
+    { label: '综合平均出金', value: avgPity },
+    { label: '当前总已垫', value: String(currentPity) },
+    { label: '卡池数量', value: String(analyzeResult.value.length) }
   ]
 })
 
@@ -275,7 +209,7 @@ const analyzeRecords = async () => {
     const res = await getAnalyzedRecordsData()
     analyzeResult.value = Array.isArray(res.data?.data) ? res.data.data : []
     activePoolType.value = analyzeResult.value[0]?.poolType ?? null
-    analyzeMessage.value = `分析成功，共返回 ${analyzeResult.value.length} 个卡池结果`
+    analyzeMessage.value = `统计完成，共 ${analyzeResult.value.length} 个卡池`
     analyzeStatus.value = 'success'
   } catch (error) {
     console.error('分析数据库结果失败:', error)
@@ -292,224 +226,79 @@ const analyzeRecords = async () => {
 <style scoped>
 .page-shell {
   width: 100%;
-  max-width: 1320px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 32px 28px 40px;
+  padding: 28px 28px 40px;
 }
 
-/* ---------- Hero ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- 首屏：原画 + 链接输入 ---------- */
 .hero {
   position: relative;
   overflow: hidden;
-  min-height: 280px;
-  padding: 40px 44px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 32px;
-  background: linear-gradient(120deg, #fff7fa 0%, #ffe6ef 46%, #f7c9dc 100%);
-  box-shadow: var(--shadow-md);
+  min-height: 380px;
+  padding: 56px 48px 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: #120d18;
 }
 
-/* 角色图放在右侧并向左淡出，文字区保持干净 */
+/* 原画保持本来的夜紫色调，粉发角色落在右侧，向左淡入底色让出文字区 */
 .hero-art {
   position: absolute;
   inset: 0 0 0 auto;
-  width: 64%;
-  background: url('/images/pool-detail-bg.jpg') 42% 22% / cover no-repeat;
-  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 30%, #000 62%);
+  width: 72%;
+  background: url('/images/pool-detail-bg.jpg') 30% 24% / cover no-repeat;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 26%, #000 52%);
 }
 
-/* 原图偏暗紫，叠一层粉紫提亮，与主色调统一 */
 .hero-art::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(248, 170, 198, 0.55) 0%, rgba(205, 184, 234, 0.4) 100%);
-  mix-blend-mode: screen;
+  background: linear-gradient(0deg, rgba(18, 13, 24, 0.7) 0%, transparent 38%);
 }
 
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(255, 243, 248, 0.92) 0%, rgba(255, 236, 244, 0.5) 46%, transparent 72%),
-    linear-gradient(0deg, rgba(226, 98, 143, 0.22) 0%, transparent 40%);
-  pointer-events: none;
-}
-
-.hero-content {
+.hero-body {
   position: relative;
-  z-index: 1;
-  max-width: 520px;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border: 1px solid rgba(226, 98, 143, 0.25);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--pink-600);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  backdrop-filter: blur(6px);
-}
-
-.eyebrow-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--pink-500);
-  box-shadow: 0 0 0 4px rgba(226, 98, 143, 0.18);
+  max-width: 540px;
 }
 
 h1 {
-  margin-top: 18px;
-  color: var(--ink-900);
-  font-size: 54px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: 0.04em;
-}
-
-h1 span {
-  background: linear-gradient(100deg, #e2628f 0%, #b45bc4 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
+  font-size: clamp(36px, 5.2vw, 60px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 24px rgba(18, 13, 24, 0.8);
 }
 
 .hero-copy {
-  margin-top: 14px;
-  color: var(--ink-700);
+  max-width: 30em;
+  margin-top: 16px;
+  color: var(--text-soft);
   font-size: 15px;
+  line-height: 1.75;
 }
 
-.hero-steps {
+.link-form {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 24px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.hero-steps li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px 6px 6px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.66);
-  color: var(--ink-700);
-  font-size: 13px;
-  font-weight: 600;
-  backdrop-filter: blur(6px);
-  transition: background-color 0.2s ease;
-}
-
-.hero-step-index {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--pink-100);
-  color: var(--pink-600);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.hero-steps li.done {
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--pink-700);
-}
-
-.hero-steps li.done .hero-step-index {
-  background: linear-gradient(135deg, #f592b5, #e2628f);
-  color: #fff;
-}
-
-/* ---------- Workflow ---------- */
-.workflow {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: 18px;
-  margin-top: 22px;
-}
-
-.step-card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  backdrop-filter: blur(14px);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.step-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-.step-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.step-index {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #fde0ea 0%, #f8b7cf 100%);
-  color: var(--pink-700);
-  font-size: 14px;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-h2 {
-  color: var(--ink-900);
-  font-size: 19px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.step-desc {
-  margin-top: 4px;
-  color: var(--ink-500);
-  font-size: 13px;
-}
-
-.control-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
+  margin-top: 32px;
 }
 
 .input-wrap {
   position: relative;
-  flex: 1 1 240px;
+  flex: 1 1 260px;
   min-width: 0;
 }
 
@@ -520,35 +309,35 @@ h2 {
   width: 18px;
   height: 18px;
   fill: none;
-  stroke: var(--pink-400);
+  stroke: var(--text-faint);
   stroke-width: 2;
   stroke-linecap: round;
+  /* 输入框的 backdrop-filter 会形成新的层叠上下文，图标需要显式置顶 */
+  z-index: 1;
   transform: translateY(-50%);
   pointer-events: none;
 }
 
 .text-input {
   width: 100%;
-  height: 46px;
+  height: 48px;
   padding: 0 16px 0 42px;
-  border: 1px solid rgba(232, 150, 182, 0.45);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--ink-900);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: rgba(21, 16, 28, 0.78);
+  color: var(--text);
   font: inherit;
-  transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.15s ease;
 }
 
 .text-input::placeholder {
-  color: var(--ink-300);
+  color: var(--text-faint);
 }
 
+.text-input:hover,
 .text-input:focus {
-  outline: none;
-  border-color: var(--pink-500);
-  box-shadow: 0 0 0 4px rgba(226, 98, 143, 0.15);
+  border-color: var(--pink);
 }
 
 .btn {
@@ -556,63 +345,53 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 46px;
-  padding: 0 20px;
-  border-radius: 14px;
-  font-size: 14px;
-  font-weight: 700;
+  height: 48px;
+  min-width: 112px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .btn-primary {
-  border: 0;
-  background: linear-gradient(135deg, #f592b5 0%, #e2628f 55%, #c94a77 100%);
-  box-shadow: var(--shadow-pink);
-  color: #fff;
+  background: var(--pink);
+  color: var(--pink-ink);
 }
 
-.btn-secondary {
-  border: 1px solid rgba(226, 98, 143, 0.35);
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--pink-600);
+.btn-primary:hover:not(:disabled) {
+  background: var(--pink-strong);
 }
 
-.btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  filter: brightness(1.04);
+.btn-ghost {
+  border-color: var(--line-strong);
+  background: transparent;
+  color: var(--text);
 }
 
-.btn-secondary:hover:not(:disabled) {
-  background: var(--pink-50);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn:active:not(:disabled) {
-  transform: translateY(0);
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--pink);
+  color: var(--pink);
 }
 
 .btn:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: progress;
-  box-shadow: none;
 }
 
 .spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.45);
-  border-top-color: #fff;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-}
-
-.spinner-pink {
-  border-color: rgba(226, 98, 143, 0.25);
-  border-top-color: var(--pink-500);
 }
 
 @keyframes spin {
@@ -621,315 +400,324 @@ h2 {
   }
 }
 
-.status,
-.status-box {
-  position: relative;
-  margin-top: 14px;
-  padding: 10px 14px 10px 32px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.status::before,
-.status-box::before {
-  content: '';
-  position: absolute;
-  top: 16px;
-  left: 14px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.status.is-success,
-.status-box.is-success {
-  background: var(--success-bg);
-  color: #2f7d5b;
-}
-
-.status.is-error,
-.status-box.is-error {
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-
-.status-box {
-  max-height: 220px;
+.link-result {
+  max-height: 180px;
+  margin: 12px 0 0;
+  padding: 12px 14px;
   overflow: auto;
+  border-left: 2px solid var(--cyan);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: rgba(21, 16, 28, 0.82);
+  color: var(--text-soft);
   font-family: var(--font-mono);
   font-size: 12px;
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-all;
+  backdrop-filter: blur(8px);
+}
+
+.link-result.is-error {
+  border-left-color: var(--red);
+  color: var(--red);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+/* ---------- 本地数据库操作条，与首屏连成一块 ---------- */
+.db-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--panel);
+}
+
+.db-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  min-width: 0;
+  padding: 20px 24px;
+}
+
+.db-action + .db-action {
+  border-left: 1px solid var(--line);
+}
+
+.db-status {
+  flex: 1 1 220px;
+  min-width: 0;
+  color: var(--text-soft);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.db-status.is-success,
+.db-status.is-error {
+  padding-left: 12px;
+  border-left: 2px solid var(--cyan);
+  color: var(--text);
+}
+
+.db-status.is-error {
+  border-left-color: var(--red);
+  color: var(--red);
 }
 
 .result-box {
+  flex: 1 1 100%;
   max-height: 280px;
-  margin: 14px 0 0;
-  padding: 16px;
+  margin: 0;
+  padding: 14px;
   overflow: auto;
-  border-radius: var(--radius-md);
-  background: linear-gradient(180deg, #3b2532 0%, #4a2f3f 100%);
-  color: #fde4ee;
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-soft);
   font-family: var(--font-mono);
   font-size: 12px;
 }
 
-/* ---------- Results ---------- */
+/* ---------- 统计结果 ---------- */
 .results {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin-top: 30px;
+  gap: 28px;
+  margin-top: 44px;
 }
 
-.section-title {
+/* 总览是一行台账：总抽数领头，其余指标以竖线分隔 */
+.summary {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  justify-content: space-between;
-  gap: 14px;
+  gap: 20px 0;
+  margin: 0;
 }
 
-.section-kicker {
-  color: var(--pink-500);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+.summary-item {
+  padding: 0 36px;
+  border-left: 1px solid var(--line);
 }
 
-.section-title h2 {
-  margin-top: 2px;
-  font-size: 24px;
+.summary-item:first-child {
+  padding-left: 0;
+  border-left: 0;
 }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
+.summary-item dt {
+  color: var(--text-soft);
+  font-size: 14px;
 }
 
-.summary-card {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 18px 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface-strong);
-  box-shadow: var(--shadow-sm);
-}
-
-.summary-icon {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  color: var(--pink-200);
-  font-size: 30px;
-  line-height: 1;
-}
-
-.summary-label {
-  color: var(--ink-500);
-  font-size: 13px;
+.summary-item dd {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: 40px;
   font-weight: 600;
-}
-
-.summary-value {
-  color: var(--ink-900);
-  font-size: 30px;
-  font-weight: 800;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 
-.summary-card.featured {
-  border-color: transparent;
-  background: linear-gradient(135deg, #f592b5 0%, #e2628f 60%, #c94a77 100%);
-  box-shadow: var(--shadow-pink);
-}
-
-.summary-card.featured .summary-label,
-.summary-card.featured .summary-value {
-  color: #fff;
-}
-
-.summary-card.featured .summary-icon {
-  color: rgba(255, 255, 255, 0.35);
+.summary-item:first-child dd {
+  color: var(--pink);
+  font-size: 72px;
+  line-height: 0.95;
 }
 
 .detail-section {
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .tab-row {
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
+  gap: 0 28px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
 }
 
 .tab-button {
-  height: 38px;
-  padding: 0 18px;
+  position: relative;
+  padding: 10px 0 12px;
   border: 0;
-  border-radius: 999px;
   background: transparent;
-  color: var(--ink-500);
-  font-size: 14px;
-  font-weight: 700;
-  transition:
-    background-color 0.18s ease,
-    box-shadow 0.18s ease;
+  color: var(--text-faint);
+  font-size: 16px;
+  font-weight: 600;
+  transition: color 0.15s ease;
 }
 
-.tab-button:hover:not(.active) {
-  background: var(--pink-50);
-  color: var(--pink-600);
+.tab-button::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+  background: var(--pink);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--text);
 }
 
 .tab-button.active {
-  background: linear-gradient(135deg, #f592b5 0%, #e2628f 100%);
-  box-shadow: 0 6px 16px rgba(226, 98, 143, 0.3);
-  color: #fff;
+  color: var(--pink);
 }
 
-/* ---------- Empty ---------- */
+.tab-button.active::after {
+  transform: scaleX(1);
+}
+
+/* ---------- 空状态：同心环呼应原画里的环形穹顶 ---------- */
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 30px;
-  padding: 56px 24px;
-  border: 1.5px dashed rgba(226, 98, 143, 0.35);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.55);
+  margin-top: 44px;
+  padding: 44px 24px 52px;
   text-align: center;
-  backdrop-filter: blur(10px);
 }
 
-.empty-orb {
-  display: grid;
-  place-items: center;
-  width: 76px;
-  height: 76px;
-  margin-bottom: 16px;
+.empty-rings {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 22px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff 0%, #fde0ea 45%, #f8aac6 100%);
-  box-shadow: 0 12px 28px rgba(226, 98, 143, 0.25);
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 11px,
+    rgba(244, 166, 200, 0.5) 11px 12px
+  );
+  mask-image: radial-gradient(circle, #000 20%, transparent 72%);
 }
 
-.empty-glyph {
-  color: var(--pink-500);
-  font-size: 30px;
-  line-height: 1;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+.empty-rings.loading {
+  animation: pulse 1.4s ease-in-out infinite;
 }
 
-.empty-spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.5);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
 }
 
 .empty-title {
-  color: var(--ink-900);
-  font-size: 17px;
-  font-weight: 700;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .empty-copy {
   margin-top: 6px;
-  color: var(--ink-500);
+  color: var(--text-soft);
   font-size: 14px;
 }
 
 .page-footer {
-  margin-top: 36px;
-  color: var(--ink-300);
+  margin-top: 48px;
+  color: var(--text-faint);
   font-size: 12px;
   text-align: center;
-  letter-spacing: 0.04em;
 }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 1100px) {
-  .workflow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* ---------- 响应式 ---------- */
+@media (max-width: 960px) {
+  .summary-item {
+    padding: 0 24px;
   }
 
-  .step-card-wide {
-    grid-column: 1 / -1;
+  .summary-item:first-child {
+    flex: 1 1 100%;
   }
 
-  .summary-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .summary-item:nth-child(2) {
+    padding-left: 0;
+    border-left: 0;
   }
 
-  .summary-card.featured {
-    grid-column: span 2;
+  .summary-item dd {
+    font-size: 32px;
   }
 }
 
 @media (max-width: 720px) {
   .page-shell {
-    padding: 16px 14px 28px;
+    padding: 14px 14px 28px;
   }
 
   .hero {
     min-height: 0;
-    padding: 28px 22px;
-    border-radius: 24px;
+    padding: 36px 20px 28px;
   }
 
   .hero-art {
     width: 100%;
-    opacity: 0.45;
+    opacity: 0.4;
+    mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
   }
 
-  h1 {
-    font-size: 36px;
-  }
-
-  .workflow {
+  .db-bar {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .summary-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .db-action {
+    padding: 16px 20px;
   }
 
-  .summary-card.featured {
-    grid-column: 1 / -1;
-    order: -1;
-  }
-
-  .summary-value {
-    font-size: 24px;
+  .db-action + .db-action {
+    border-top: 1px solid var(--line);
+    border-left: 0;
   }
 
   .btn {
     flex: 1 1 auto;
   }
+
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-item,
+  .summary-item:nth-child(2) {
+    padding: 0 0 0 14px;
+    border-left: 1px solid var(--line);
+  }
+
+  .summary-item:first-child {
+    grid-column: 1 / -1;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .summary-item:first-child dd {
+    font-size: 56px;
+  }
+
+  .tab-row {
+    gap: 0 20px;
+  }
+
+  .tab-button {
+    font-size: 15px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .step-card,
-  .btn,
   .spinner,
-  .empty-spinner {
+  .empty-rings.loading {
     animation: none;
+  }
+
+  .btn,
+  .text-input,
+  .tab-button,
+  .tab-button::after {
     transition: none;
   }
 }

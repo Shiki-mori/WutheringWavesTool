@@ -1,13 +1,22 @@
 export const CHART_FONT =
-  '"HarmonyOS Sans SC", "MiSans", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif'
+  '"Chakra Petch", "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Noto Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
 
-export const CHART_INK = '#3b2532'
-export const CHART_INK_SOFT = '#8b6f7d'
-export const CHART_GRID_LINE = 'rgba(226, 98, 143, 0.14)'
-export const CHART_AXIS_LINE = 'rgba(201, 74, 119, 0.28)'
+// 与 style.css 中的配色保持一致（ECharts 无法直接读取 CSS 变量）
+export const CHART_INK = '#f1e9f4'
+export const CHART_INK_SOFT = '#b7a8c4'
+export const CHART_INK_FAINT = '#8a7b95'
+export const CHART_PANEL = '#1e1728'
+export const CHART_GRID_LINE = 'rgba(214, 190, 235, 0.1)'
+export const CHART_AXIS_LINE = 'rgba(214, 190, 235, 0.3)'
 
-export const PINK_GRADIENT = ['#f8aac6', '#e2628f'] as const
-export const LILAC_GRADIENT = ['#dccbf3', '#a68bd4'] as const
+export const CHART_PINK = '#f4a6c8'
+export const CHART_CYAN = '#86dbe9'
+export const CHART_GOLD = '#edc872'
+export const CHART_RED = '#f0606e'
+export const CHART_UNKNOWN = '#6f6379'
+
+export const PINK_GRADIENT = ['rgba(244, 166, 200, 0.35)', CHART_PINK] as const
+export const CYAN_GRADIENT = ['rgba(134, 219, 233, 0.35)', CHART_CYAN] as const
 
 export function linearGradient(from: string, to: string, horizontal = false) {
   return {
@@ -31,8 +40,8 @@ export const chartTextStyle = {
 }
 
 export const chartTooltipStyle = {
-  backgroundColor: 'rgba(255, 255, 255, 0.96)',
-  borderColor: 'rgba(226, 98, 143, 0.3)',
+  backgroundColor: '#2c2239',
+  borderColor: CHART_AXIS_LINE,
   borderWidth: 1,
   padding: [10, 14],
   textStyle: {
@@ -40,18 +49,18 @@ export const chartTooltipStyle = {
     fontSize: 13,
     color: CHART_INK
   },
-  extraCssText: 'border-radius: 12px; box-shadow: 0 10px 28px rgba(163, 55, 94, 0.16);'
+  extraCssText: 'border-radius: 4px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);'
 }
 
 export const chartAxisLabel = {
   fontSize: 12,
   fontWeight: 500,
-  color: CHART_INK_SOFT
+  color: CHART_INK_FAINT
 }
 
 export const chartSplitLine = {
   lineStyle: {
     color: CHART_GRID_LINE,
-    type: 'dashed' as const
+    type: 'solid' as const
   }
 }

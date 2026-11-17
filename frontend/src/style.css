@@ -1,46 +1,35 @@
+/* 配色取自首屏原画：夜紫底、发色粉、发梢青、手套红 */
 :root {
-  --pink-50: #fff6f9;
-  --pink-100: #ffe8f0;
-  --pink-200: #fdd0e0;
-  --pink-300: #f8aac6;
-  --pink-400: #ef83a9;
-  --pink-500: #e2628f;
-  --pink-600: #c94a77;
-  --pink-700: #a3375e;
-  --lilac-300: #cdb8ea;
-  --lilac-500: #a68bd4;
+  --bg: #15101c;
+  --panel: #1e1728;
+  --panel-raised: #281f35;
+  --line: rgba(214, 190, 235, 0.14);
+  --line-strong: rgba(214, 190, 235, 0.3);
 
-  --ink-900: #3b2532;
-  --ink-700: #5e4452;
-  --ink-500: #8b6f7d;
-  --ink-300: #b9a2ad;
+  --text: #f1e9f4;
+  --text-soft: #b7a8c4;
+  --text-faint: #8a7b95;
 
-  --surface: rgba(255, 255, 255, 0.74);
-  --surface-strong: rgba(255, 255, 255, 0.92);
-  --border: rgba(232, 150, 182, 0.28);
-  --border-strong: rgba(226, 98, 143, 0.42);
+  --pink: #f4a6c8;
+  --pink-strong: #ff8fbb;
+  --pink-ink: #2a1220;
+  --cyan: #86dbe9;
+  --gold: #edc872;
+  --red: #f0606e;
 
-  --success: #3fa77a;
-  --success-bg: rgba(91, 196, 148, 0.12);
-  --danger: #d6456b;
-  --danger-bg: rgba(226, 80, 118, 0.1);
+  --radius: 4px;
 
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 26px;
-  --shadow-sm: 0 4px 14px rgba(163, 55, 94, 0.06);
-  --shadow-md: 0 18px 40px rgba(163, 55, 94, 0.1);
-  --shadow-pink: 0 12px 26px rgba(226, 98, 143, 0.32);
-
-  --font-sans: 'HarmonyOS Sans SC', 'MiSans', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei',
-    'Segoe UI', system-ui, sans-serif;
+  /* 拉丁字符与数字使用 Chakra Petch，中文落到系统黑体 */
+  --font-sans: 'Chakra Petch', 'HarmonyOS Sans SC', 'MiSans', 'PingFang SC', 'Noto Sans SC',
+    'Noto Sans CJK SC', 'Microsoft YaHei', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   font-family: var(--font-sans);
-  line-height: 1.55;
+  line-height: 1.6;
   font-weight: 400;
-  color: var(--ink-900);
-  background-color: var(--pink-50);
+  color: var(--text);
+  background-color: var(--bg);
+  color-scheme: dark;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -55,33 +44,18 @@
 }
 
 body {
-  position: relative;
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   background:
-    radial-gradient(1200px 620px at 8% -8%, rgba(253, 208, 224, 0.95), transparent 62%),
-    radial-gradient(900px 560px at 100% 0%, rgba(214, 196, 245, 0.55), transparent 60%),
-    radial-gradient(1000px 700px at 50% 110%, rgba(248, 170, 198, 0.4), transparent 60%),
-    linear-gradient(180deg, #fff8fb 0%, #fdeef4 100%);
-  background-attachment: fixed;
-}
-
-/* 细点阵纹理，只做氛围，不参与布局 */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-image: radial-gradient(rgba(201, 74, 119, 0.09) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 75%);
-  pointer-events: none;
+    radial-gradient(1100px 520px at 78% -120px, rgba(126, 82, 168, 0.28), transparent 70%),
+    var(--bg);
 }
 
 h1,
 h2,
 h3,
+h4,
 p {
   margin: 0;
 }
@@ -93,18 +67,16 @@ button {
 
 button:focus-visible,
 input:focus-visible {
-  outline: 3px solid rgba(226, 98, 143, 0.28);
+  outline: 2px solid var(--cyan);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: var(--pink-200);
-  color: var(--ink-900);
+  background: var(--pink);
+  color: var(--pink-ink);
 }
 
 #app {
-  position: relative;
-  z-index: 1;
   width: 100%;
   min-height: 100vh;
 }
