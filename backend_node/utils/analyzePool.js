@@ -115,7 +115,8 @@ function analyzePool(records) {
         fiveStar: fiveStarCount,
         avgPity: avgPity.toFixed(2),//平均出金抽数
         avgUp: avgUp.toFixed(2),//平均up抽数
-        upRate: upRate.toFixed(4)*100 + '%',//up率
+        // 先换算成百分数再保留两位；Number() 去掉末尾的 0，保持 "100%"、"65.38%" 的原有写法
+        upRate: Number((upRate * 100).toFixed(2)) + '%',//up率
         pityList,
         "已垫": pity,
         upSeries: maxUpSeries,
